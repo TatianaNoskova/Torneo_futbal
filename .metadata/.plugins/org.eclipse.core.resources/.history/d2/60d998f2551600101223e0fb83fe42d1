@@ -1,0 +1,103 @@
+package torneo_futbal;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class SistemaRegistro {
+
+    private List<Persona> personasRegistradas;
+    private List<String> adminEmails;
+    private List<String> socioEmails;
+
+    public SistemaRegistro() {
+        personasRegistradas = new ArrayList<>();
+
+        // Примерные "базы"
+        adminEmails = new ArrayList<>();
+        adminEmails.add("admin@afa.com");
+        adminEmails.add("clubadmin1@club.com");
+
+        socioEmails = new ArrayList<>();
+        socioEmails.add("juan.socio@gmail.com");
+        socioEmails.add("ana.socia@yahoo.com");
+    }
+
+    public void iniciarRegistro() {
+        String email = JOptionPane.showInputDialog("Ingrese su correo electrónico:");
+
+        if (emailExiste(email)) {
+            JOptionPane.showMessageDialog(null, "Este correo ya está registrado.");
+            return;
+        }
+
+        String nombre = JOptionPane.showInputDialog("Ingrese su nombre:");
+        String apellido = JOptionPane.showInputDialog("Ingrese su apellido:");
+
+        // Показываем выбор ролей (один и тот же список для всех)
+        String[] opcionesRol = {
+                "Administrador AFA",
+                "Administrador de club",
+                "Socio del club",
+                "Público general"
+        };
+
+        String rolSeleccionado = (String) JOptionPane.showInputDialog(
+                null,
+                "Seleccione su rol:",
+                "Selección de rol",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opcionesRol,
+                opcionesRol[0]
+        );
+
+        if (rolSeleccionado == null) {
+            JOptionPane.showMessageDialog(null, "No se seleccionó ninguna opción.");
+            return;
+        }
+
+        // Проверка верификации в зависимости от выбранной роли
+        boolean verificado = switch (rolSeleccionado) {
+            case "Administrador AFA", "Administrador de club" -> adminEmails.contains(email);
+            case "Socio del club" -> socioEmails.contains(email);
+            default -> true; // Público general — всегда разрешён
+        };
+
+        if (!verificado) {
+            JOptionPane.showMessageDialog(null, "Error de verificación: el correo no está autorizado para el rol seleccionado.");
+            return;
+        }
+
+        // Всё прошло — создаём объект (добавим реализацию на следующем шаге)
+        JOptionPane.showMessageDialog(null, "¡Te has registrado con éxito como: " + rolSeleccionado + "!");
+        mostrarMenu(rolSeleccionado);
+    }
+
+    private boolean emailExiste(String email) {
+        for (Persona persona : personasRegistradas) {
+            if (persona instanceof Usuario usuario) {
+                if (usuario.getEmail().equalsIgnoreCase(email)) {
+                    return true;
+                }
+            } else if (persona instanceof Administrador admin) {
+                if (admin.getEmail().equalsIgnoreCase(email)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void mostrarMenu(String rolSeleccionado) {
+        String menu = switch (rolSeleccionado) {
+            case "Administrador AFA" -> "Menú Administrador AFA:\n1. Gestionar clubes\n2. Ver estadísticas\n3. Salir";
+            case "Administrador de club" -> "Menú Administrador de club:\n1. Gestionar jugadores\n2. Ver partidos\n3. Salir";
+            case "Socio del club" -> "Menú Socio del club:\n1. Ver partidos\n2. Comprar entradas\n3. Salir";
+            case "Público general" -> "Menú Público general:\n1. Ver próximos partidos\n2. Ver resultados\n3. Salir";
+            default -> "Menú no disponible.";
+        };
+
+        JOptionPane.showMessageDialog(null, menu);
+    }
+}

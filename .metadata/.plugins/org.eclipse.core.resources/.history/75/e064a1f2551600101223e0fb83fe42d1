@@ -1,0 +1,38 @@
+package torneo_futbal;
+
+public class Usuario {
+	
+	private String nombre;
+    private String apellido;
+    private String email;
+    private String rol;
+	
+    
+    public Usuario(String nombre, String apellido, String email, String rol) {
+		
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.email = email;
+		this.rol = rol;
+	}
+
+
+	public String getEmail() {
+		return email;
+	}
+
+
+	public String getRol() {
+		return rol;
+	}
+
+
+	@Override
+    public String toString() {
+        return nombre + " " + apellido + " (" + rol + ")";
+    }
+    
+    
+    
+
+}
