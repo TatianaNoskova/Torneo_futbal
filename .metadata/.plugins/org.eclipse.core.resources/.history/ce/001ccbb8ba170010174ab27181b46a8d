@@ -97,7 +97,7 @@ public class SistemaRegistro {
         
      
         JOptionPane.showMessageDialog(null, "¡Te has registrado con éxito como: " + rolSeleccionado + "!");
-        nuevaPersona.mostrarMenu();
+        nuevaPersona.mostrarMenu(); 
 
     }
     

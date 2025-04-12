@@ -97,7 +97,7 @@ public class SistemaRegistro {
         
      
         JOptionPane.showMessageDialog(null, "¡Te has registrado con éxito como: " + rolSeleccionado + "!");
-        nuevaPersona.mostrarMenu();
+        mostrarMenu(rolSeleccionado);
 
     }
     
@@ -119,7 +119,107 @@ public class SistemaRegistro {
     }
 
 
+    private void mostrarMenu(String rolSeleccionado) {
+    	
+    	if (rolSeleccionado.equals("Administrador AFA")) {
+            procesarMenuAdminAFA(); 
+        } else {
+    	
+        String menu = switch (rolSeleccionado) {
+
+            case "Administrador de club" -> "Menú Administrador de club:\n1. Registrar club\n2. Registrar estadio\n3. Registrar equipo\n4. Gestionar disciplinas y actividades \n5. Reservar/administrar instalaciones\n6. Agregar categorías de entradas\n7. Vender entradas\n8. Administrar beneficios y premios\n9. Salir";
+            case "Socio del club", "Público general"  -> "Menú Usuario:\n1. Ver actividades de todos los clubes\n2. Consultar fechas y horarios disponibles\n3. Reservar / modificar / cancelar reserva\n4. Ver próximos partidos\n5. Elegir categoría de entrada\n6. Comprar entrada\n7. Salir";
+            
+            default -> "Menú no disponible.";
+        	};
+
+        JOptionPane.showMessageDialog(null, menu);
+        }
+    }
     
+    private void procesarMenuAdminAFA() {
+        String[] opciones = {
+                "Crear torneo",
+                "Asignar fechas y horarios",
+                "Asignar árbitro",
+                "Capturar estadísticas y resultados",
+                "Salir"
+        };
+
+        String seleccion = (String) JOptionPane.showInputDialog(
+                null,
+                "Menú Administrador AFA:",
+                "Opciones",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
+
+        if (seleccion == null || seleccion.equals("Salir")) {
+            JOptionPane.showMessageDialog(null, "Sesión finalizada.");
+            return;
+        }
+
+        if (seleccion.equals("Crear torneo")) {
+            mostrarSubmenuCrearTorneo();
+        } else if (seleccion.equals("Asignar fechas y horarios")) {
+            mostrarSubmenuAsignarFechas();
+        } else {
+            JOptionPane.showMessageDialog(null, "Función aún no implementada: " + seleccion);
+        }
+    }
+    
+    private void mostrarSubmenuCrearTorneo() {
+        String[] subOpciones = {"Registrar equipo", "Registrar árbitro", "Volver"};
+
+        String seleccion = (String) JOptionPane.showInputDialog(
+                null,
+                "Submenú - Crear torneo:",
+                "Opciones",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                subOpciones,
+                subOpciones[0]
+        );
+
+        if (seleccion == null || seleccion.equals("Volver")) {
+            procesarMenuAdminAFA();
+            return;
+        }
+
+        
+        JOptionPane.showMessageDialog(null, "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
+    }
+    
+    private void mostrarSubmenuAsignarFechas() {
+        String[] opciones = {
+                "Sortear partido",
+                "Generar los grupos",
+                "Asignar sedes",
+                "Asignar árbitros",
+                "Volver"
+        };
+
+        String seleccion = (String) JOptionPane.showInputDialog(
+                null,
+                "Submenú - Asignar fechas y horarios:",
+                "Opciones",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
+
+        if (seleccion == null || seleccion.equals("Volver")) {
+            procesarMenuAdminAFA(); 
+            return;
+        }
+
+        
+        JOptionPane.showMessageDialog(null,
+                "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
+    }
 
 
     

@@ -1,6 +1,6 @@
 package torneo_futbal;
 
-public abstract class Persona {
+public class Persona {
     protected String nombre;
     protected String apellido;
 
@@ -17,5 +17,5 @@ public abstract class Persona {
 		return apellido;
 	}
 
-	public abstract void mostrarMenu(); 
+   
 }

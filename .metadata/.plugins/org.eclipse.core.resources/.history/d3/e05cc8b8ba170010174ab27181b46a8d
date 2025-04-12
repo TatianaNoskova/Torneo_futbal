@@ -1,6 +1,6 @@
 package torneo_futbal;
 
-public abstract class Administrador extends Persona {
+public class Administrador extends Persona {
 	
 	protected String email;
     protected String rol;
