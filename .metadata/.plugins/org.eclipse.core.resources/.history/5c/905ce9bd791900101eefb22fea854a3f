@@ -1,0 +1,68 @@
+package torneo_futbal;
+
+import javax.swing.JOptionPane;
+
+public class DT extends Persona {
+	
+	protected String email;
+    protected String rol;
+
+	public DT(String nombre, String apellido, String email) {
+		super(nombre, apellido);
+		
+		this.email = email;
+        this.rol = "DT";
+	
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+
+		
+	@Override
+    public void mostrarMenu() {
+		
+		String[] opciones = {
+                "Registrar jugadores",
+                "Hacer alineación",
+                "Consultar estadísticas",
+                "Salir"
+        };
+        
+        boolean continuar = true; 
+
+        while (continuar) {
+            String seleccion = (String) JOptionPane.showInputDialog(
+                    null,
+                    "Bienvenido " + nombre + " " + apellido + "\n\nSelecciona una opción:",
+                    "Menú Árbitro",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    opciones,
+                    opciones[0]
+            );
+
+            if (seleccion == null || seleccion.equals("Salir")) {
+                JOptionPane.showMessageDialog(null, "Saliendo del menú.");
+                continuar=false;
+            }
+
+            switch (seleccion) {
+                case "Registrar jugadores":
+                    JOptionPane.showMessageDialog(null, "Función aún no implementada");
+                    break;
+                case "Hacer alineación":
+                    JOptionPane.showMessageDialog(null, "Función aún no implementada");
+                    break;
+                case "Consultar estadísticas":
+                	JOptionPane.showMessageDialog(null, "Demonstración de la estadística (función aún no implementada");
+                default:
+                    JOptionPane.showMessageDialog(null, "Opción no válida.");
+            }
+        }
+    
+		
+	}
+
+}

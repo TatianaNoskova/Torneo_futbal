@@ -1,0 +1,25 @@
+package torneo_futbal;
+
+public class DT extends Persona {
+	
+	protected String email;
+    protected String rol;
+
+	public DT(String nombre, String apellido, String email) {
+		super(nombre, apellido);
+		
+		this.email = email;
+        this.rol = "DT";
+	
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+
+		
+	@Override
+    public void mostrarMenu() {
+	}
+
+}

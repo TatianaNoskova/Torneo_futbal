@@ -11,7 +11,9 @@ public class SistemaRegistro {
     private List<String> adminClubEmails;
     private List<String> socioEmails;
     
-    //private List<Arbitro> arbitrosRegistrados = new ArrayList<>();
+    private List<String> arbitroEmails;
+    
+    private List<String> dtEmails;
 
     public SistemaRegistro() {
         personasRegistradas = new ArrayList<>();
@@ -26,6 +28,15 @@ public class SistemaRegistro {
         socioEmails = new ArrayList<>();
         socioEmails.add("juan.socio@gmail.com");
         socioEmails.add("ana.socia@yahoo.com");
+        
+        arbitroEmails = new ArrayList<>();
+        arbitroEmails.add("arbitro1@futbol.com");
+        
+        dtEmails = new ArrayList<>();
+        dtEmails.add("director.tecnico1@futbol.com");
+        
+        
+        
     }
 
     public void iniciarRegistro() {
@@ -35,6 +46,33 @@ public class SistemaRegistro {
             JOptionPane.showMessageDialog(null, "Este correo ya está registrado.");
             return;
         }
+        
+     
+        if (arbitroEmails.contains(email)) {
+            
+            String nombre = "<Nombre del Árbitro>";  
+            String apellido = "<Apellido del Árbitro>";  
+            Persona nuevaPersona = new Arbitro(nombre, apellido, email);
+            personasRegistradas.add(nuevaPersona);
+            
+            JOptionPane.showMessageDialog(null, "Has iniciado sesión como Árbitro.");
+            nuevaPersona.mostrarMenu();
+            return;
+        };  
+        
+        if (dtEmails.contains(email)) {
+
+            
+            String nombre = "<Nombre del DT>";  
+            String apellido = "<Apellido del DT>";  
+            Persona nuevaPersona = new DirectorTecnico(nombre, apellido, email);
+            personasRegistradas.add(nuevaPersona);
+            
+            JOptionPane.showMessageDialog(null, "Has iniciado sesión como Director Técnico.");
+            nuevaPersona.mostrarMenu();
+            return;
+        }; 
+        	
 
         String nombre = JOptionPane.showInputDialog("Ingrese su nombre:");
         String apellido = JOptionPane.showInputDialog("Ingrese su apellido:");
@@ -67,6 +105,7 @@ public class SistemaRegistro {
             case "Administrador AFA" -> adminAFAEmails.contains(email);
             case "Administrador de club" -> adminClubEmails.contains(email);
             case "Socio del club" -> socioEmails.contains(email);
+            case "Árbitro" -> arbitroEmails.contains(email);
             default -> true; // Público general - para todos
         };
 
@@ -89,6 +128,11 @@ public class SistemaRegistro {
             case "Socio del club":
                 nuevaPersona = new Socio(nombre, apellido, email);
                 break;
+            case "Árbitro":
+                nuevaPersona = new Arbitro(nombre, apellido, email);
+                JOptionPane.showMessageDialog(null, "Has iniciado sesión como árbitro.");
+                break;
+                
             default: // Público general
                 nuevaPersona = new Publico(nombre, apellido, email);
         }
