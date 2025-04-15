@@ -12,7 +12,7 @@ public class AdminAFA extends Administrador {
 	 @Override
 	    public void mostrarMenu() {
 	        boolean salir = false;
-
+	        String nombre = "isabel";
 	        while (!salir) {
 	            String[] opciones = {
 	                    "Crear torneo",
