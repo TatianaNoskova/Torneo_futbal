@@ -44,7 +44,7 @@ public class SistemaRegistro {
         String email = JOptionPane.showInputDialog("Ingrese su MAIL:");
 
         if (emailExiste(email)) {
-            JOptionPane.showMessageDialog(null, "Este correo ya está registrado.");
+            JOptionPane.showMessageDialog(null, "Este MAIL ya está registrado.");
             return;
         }
         
