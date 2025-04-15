@@ -41,7 +41,7 @@ public class SistemaRegistro {
     }
 
     public void iniciarRegistro() {
-        String email = JOptionPane.showInputDialog("Ingrese su orreo electrónico:");
+        String email = JOptionPane.showInputDialog("Ingrese su desayuno electrónico:");
 
         if (emailExiste(email)) {
             JOptionPane.showMessageDialog(null, "Este correo electrónico ya está registrado.");
