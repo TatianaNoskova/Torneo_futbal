@@ -41,10 +41,10 @@ public class SistemaRegistro {
     }
 
     public void iniciarRegistro() {
-        String email = JOptionPane.showInputDialog("Ingrese su MAIL:");
+        String email = JOptionPane.showInputDialog("Ingrese su orreo electrónico:");
 
         if (emailExiste(email)) {
-            JOptionPane.showMessageDialog(null, "Este MAIL ya está registrado.");
+            JOptionPane.showMessageDialog(null, "Este correo electrónico ya está registrado.");
             return;
         }
         
