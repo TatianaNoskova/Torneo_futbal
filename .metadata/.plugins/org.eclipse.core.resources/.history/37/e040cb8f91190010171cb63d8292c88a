@@ -51,7 +51,7 @@ public class DirectorTecnico extends Persona {
 
             switch (seleccion) {
                 case "Registrar jugadores":
-                    JOptionPane.showMessageDialog(null, "Registrar jugadores (función aún no implementada)");
+                    JOptionPane.showMessageDialog(null, "Registrar jugadores (función aún no implementada=");
                     break;
                 case "Hacer alineación":
                     JOptionPane.showMessageDialog(null, "Hacer alineación (función aún no implementada)");
