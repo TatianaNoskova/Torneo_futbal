@@ -10,9 +10,10 @@ public class SistemaRegistro {
     private List<String> adminAFAEmails;
     private List<String> adminClubEmails;
     private List<String> socioEmails;
+    
     private List<String> arbitroEmails;
+    
     private List<String> dtEmails;
-    private List<String> clubes;
 
     public SistemaRegistro() {
         personasRegistradas = new ArrayList<>();
@@ -33,8 +34,6 @@ public class SistemaRegistro {
         
         dtEmails = new ArrayList<>();
         dtEmails.add("director.tecnico1@futbol.com");
-        
-        
         
         
         
@@ -69,7 +68,7 @@ public class SistemaRegistro {
             Persona nuevaPersona = new DirectorTecnico(nombre, apellido, email);
             personasRegistradas.add(nuevaPersona);
             
-            JOptionPane.showMessageDialog(null, "Has iniciado sesión como Director Técnico del club (funcionalidad en desarrollo)");
+            JOptionPane.showMessageDialog(null, "Has iniciado sesión como Director Técnico.");
             nuevaPersona.mostrarMenu();
             return;
         }; 

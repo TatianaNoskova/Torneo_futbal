@@ -17,7 +17,6 @@ public class AdminClub extends Administrador {
                     "Registrar club",
                     "Registrar estadio",
                     "Registrar equipo",
-                    "Registrar director técnico",
                     "Gestionar disciplinas y actividades",
                     "Reservar/administrar instalaciones",
                     "Agregar categorías de entradas",
