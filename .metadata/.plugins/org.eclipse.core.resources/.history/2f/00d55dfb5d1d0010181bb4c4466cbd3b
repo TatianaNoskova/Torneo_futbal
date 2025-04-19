@@ -129,7 +129,10 @@ public class SistemaRegistro {
             case "Socio del club":
                 nuevaPersona = new Socio(nombre, apellido, email);
                 break;
-            
+            case "Árbitro":
+                nuevaPersona = new Arbitro(nombre, apellido, email);
+                JOptionPane.showMessageDialog(null, "Has iniciado sesión como árbitro.");
+                break;
                 
             default: // Público general
                 nuevaPersona = new Publico(nombre, apellido, email);

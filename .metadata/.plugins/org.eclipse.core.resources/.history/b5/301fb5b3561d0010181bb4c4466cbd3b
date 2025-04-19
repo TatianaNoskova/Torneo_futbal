@@ -24,12 +24,12 @@ public class Arbitro extends Persona {
 		
 		while (!salir) {
 			String[] opciones = {
-                "Ver partidos asignados",
+                "Ver partidos asignados (demostración)",
                 "Ver horario y lugar de los partidos",
                 "Salir"
 			};
 			
-			String seleccion = (String) JOptionPane.showInputDialog(
+			String selecсion = (String) JOptionPane.showInputDialog(
                     null,
                     "Bienvenido " + nombre + " " + apellido + "\n\nSelecciona una opción:",
                     "Menú Árbitro",
@@ -40,7 +40,7 @@ public class Arbitro extends Persona {
 			);
                     		
                             
-            if (seleccion == null || seleccion.equals("Salir")) {
+            if (selecсion == null || seleccion.equals("Salir")) {
                 salir = true;
             } else {
                 procesarOpcion(seleccion);

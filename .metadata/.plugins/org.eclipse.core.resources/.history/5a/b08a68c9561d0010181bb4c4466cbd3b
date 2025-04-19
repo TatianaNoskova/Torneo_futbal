@@ -24,7 +24,7 @@ public class Arbitro extends Persona {
 		
 		while (!salir) {
 			String[] opciones = {
-                "Ver partidos asignados",
+                "Ver partidos asignados (demostración)",
                 "Ver horario y lugar de los partidos",
                 "Salir"
 			};

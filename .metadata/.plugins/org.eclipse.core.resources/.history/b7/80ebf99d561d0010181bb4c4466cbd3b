@@ -106,7 +106,7 @@ public class SistemaRegistro {
             case "Administrador AFA" -> adminAFAEmails.contains(email);
             case "Administrador de club" -> adminClubEmails.contains(email);
             case "Socio del club" -> socioEmails.contains(email);
-            
+            case "Árbitro" -> arbitroEmails.contains(email);
             default -> true; // Público general - para todos
         };
 
@@ -129,7 +129,10 @@ public class SistemaRegistro {
             case "Socio del club":
                 nuevaPersona = new Socio(nombre, apellido, email);
                 break;
-            
+            case "Árbitro":
+                nuevaPersona = new Arbitro(nombre, apellido, email);
+                JOptionPane.showMessageDialog(null, "Has iniciado sesión como árbitro.");
+                break;
                 
             default: // Público general
                 nuevaPersona = new Publico(nombre, apellido, email);

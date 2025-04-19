@@ -31,7 +31,7 @@ public class DirectorTecnico extends Persona {
                 "Hacer alineación",
                 "Consultar estadísticas",
                 "Salir"
-			};
+        };
         
         
          String seleccion = (String) JOptionPane.showInputDialog(
@@ -46,11 +46,13 @@ public class DirectorTecnico extends Persona {
 
             if (seleccion == null || seleccion.equals("Salir")) {
             	salir = true;
-            } else {
-            	procesarOpcion(seleccion);
-            	}
+                JOptionPane.showMessageDialog(null, "Saliendo del menú.");
+                
+            	}else {
+            		procesarOpcion(seleccion);
+                }
+			}
 		}
-	}
 	
 	private void procesarOpcion(String seleccion) {
 	    switch (seleccion) {
@@ -59,7 +61,6 @@ public class DirectorTecnico extends Persona {
 	        case "Consultar estadísticas" -> mostrarSubmenuConsultarEstadisticas();
 	        default -> JOptionPane.showMessageDialog(null, "Opción no válida.");
 	    }
-	}
 	    
 	private void mostrarSubmenuRegistrarJugadores() {
 		String seleccion = "Registrar Jugadores";

@@ -44,7 +44,7 @@ public class AdminAFA extends Administrador {
 	            case "Crear torneo" -> mostrarSubmenuCrearTorneo();
 	            case "Asignar fechas y horarios" -> mostrarSubmenuAsignarFechas();
 	            case "Capturar estadísticas y resultados" -> mostrarSubmenuCapturarResultados();
-	            default -> JOptionPane.showMessageDialog(null, "Opción no valida.");
+	            default -> JOptionPane.showMessageDialog(null, "Opción no reconocida.");
 	        }
 	    }
 

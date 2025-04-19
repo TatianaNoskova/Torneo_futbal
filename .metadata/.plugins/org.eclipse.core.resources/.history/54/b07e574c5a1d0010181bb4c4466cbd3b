@@ -46,8 +46,10 @@ public class DirectorTecnico extends Persona {
 
             if (seleccion == null || seleccion.equals("Salir")) {
             	salir = true;
-            } else {
-            	procesarOpcion(seleccion);
+                JOptionPane.showMessageDialog(null, "Saliendo del menú.");
+                
+            	} else {
+            		procesarOpcion(seleccion);
             	}
 		}
 	}
