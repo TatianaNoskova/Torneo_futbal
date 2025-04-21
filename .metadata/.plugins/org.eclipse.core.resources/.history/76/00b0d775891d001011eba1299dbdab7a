@@ -2,7 +2,7 @@ package torneo_futbal;
 
 import javax.swing.JOptionPane;
 
-public abstract class Usuario extends Persona {
+public class Usuario extends Persona {
 	
 	protected String email;
     protected String rol;
@@ -88,7 +88,6 @@ public abstract class Usuario extends Persona {
 		        "Ver próximos partidos",
 		        "Elegir categoría de entrada",
 		        "Comprar entrada",
-		        "Solicitar reembolso",
 		        "Volver"
 		    };
 

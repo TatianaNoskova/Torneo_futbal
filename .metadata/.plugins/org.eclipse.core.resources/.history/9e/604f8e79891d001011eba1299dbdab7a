@@ -2,15 +2,17 @@ package torneo_futbal;
 
 import javax.swing.JOptionPane;
 
-public class DirectorTecnico extends Usuario {
+public class DirectorTecnico extends Persona {
 	
 	protected String email;
     protected String rol;
+    protected Club club;
 
 	public DirectorTecnico(String nombre, String apellido, String email) {
-		super(nombre, apellido, email, "Director Técnico");
+		super(nombre, apellido);
 		
 		this.email = email;
+        this.rol = "Director Técnico";
 	
 	}
 	

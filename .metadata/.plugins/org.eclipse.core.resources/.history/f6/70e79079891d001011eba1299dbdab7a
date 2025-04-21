@@ -2,15 +2,15 @@ package torneo_futbal;
 
 import javax.swing.JOptionPane;
 
-public class Arbitro extends Usuario {
+public class Arbitro extends Persona {
 	
 	protected String email;
     protected String rol;
 
     public Arbitro (String nombre, String apellido, String email) {
-        super(nombre, apellido, email, "Árbitro" );
+        super(nombre, apellido);
         this.email = email;
-       
+        this.rol = "Árbitro";
     }
 
 	public String getEmail() {
