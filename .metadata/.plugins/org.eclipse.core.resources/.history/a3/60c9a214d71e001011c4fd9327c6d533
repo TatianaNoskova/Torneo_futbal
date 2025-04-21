@@ -4,13 +4,18 @@ import javax.swing.JOptionPane;
 
 public abstract class Usuario extends Persona {
 	
-	protected String rol;
+	protected String email;
+    protected String rol;
 
     public Usuario(String nombre, String apellido, String email, String rol) {
-        super(nombre, apellido, email);
-        
+        super(nombre, apellido);
+        this.email = email;
         this.rol = rol;
     }
+
+	public String getEmail() {
+		return email;
+	}
 
 	public String getRol() {
 		return rol;

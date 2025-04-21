@@ -41,24 +41,7 @@ public class SistemaRegistro {
     }
 
     public void iniciarRegistro() {
-    	String email = null;
-    	boolean emailValido = false;
-
-    	while (!emailValido) {
-    	    email = JOptionPane.showInputDialog("Ingrese su correo electrónico:");
-
-    	    if (email == null) {
-    	        JOptionPane.showMessageDialog(null, "Operación cancelada.");
-    	        return;
-    	    }
-
-    	    if (email.contains("@")) {
-    	        emailValido = true;
-    	    } else {
-    	        JOptionPane.showMessageDialog(null, "Correo inválido. Asegúrese de incluir '@'.");
-    	    }
-    	}
-
+        String email = JOptionPane.showInputDialog("Ingrese su correo electrónico:");
 
         if (emailExiste(email)) {
             JOptionPane.showMessageDialog(null, "Este correo electrónico ya está registrado.");
