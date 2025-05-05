@@ -3,6 +3,8 @@ package torneo_futbal;
 import javax.swing.JOptionPane;
 
 public class AdminClub extends Administrador {
+	
+	private Club club;
 
     public AdminClub(String nombre, String apellido, String email) {
         super(nombre, apellido, email, "Administrador del Club");
@@ -39,9 +41,36 @@ public class AdminClub extends Administrador {
             if (seleccion == null || seleccion.equals("Salir")) {
                 salir = true;
             } else {
-                JOptionPane.showMessageDialog(null,
-                        "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
+            	procesarOpcion(seleccion);
             }
         }
+    }
+    
+    private void procesarOpcion(String seleccion) {
+        switch (seleccion) {
+            case "Registrar club" -> registrarClub();
+            // Otros opciones van a ser agregadas despues
+            
+            default -> JOptionPane.showMessageDialog(null,
+                    "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
+        }
+    }
+    
+    private void registrarClub() {
+        if (club != null) {
+            JOptionPane.showMessageDialog(null, "Ya tienes un club registrado:\n" + club);
+            return;
+        }
+
+        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del club:");
+        String direccion = JOptionPane.showInputDialog("Ingrese la dirección del club:");
+
+        if (nombre == null || direccion == null || nombre.isBlank() || direccion.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Datos inválidos. Por favor, intenta nuevamente");
+            return;
+        }
+
+        club = new Club(nombre, direccion);
+        JOptionPane.showMessageDialog(null, "Club registrado exitosamente:\n" + club);
     }
 }
