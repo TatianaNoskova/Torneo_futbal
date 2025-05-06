@@ -1,0 +1,48 @@
+package torneo_futbal;
+
+import javax.swing.ImageIcon;
+
+public class Equipo {
+	
+	    private String nombre;
+	    private String categoria;
+	    private String colores;
+	    private ImageIcon escudo; 
+	    private Estadio estadioLocal;
+
+	    public Equipo(String nombre, String categoria, String colores, String escudo, Estadio estadioLocal) {
+	        this.nombre = nombre;
+	        this.categoria = categoria;
+	        this.colores = colores;
+	        this.escudo = new ImageIcon(); // Creamos un ImageIcon con el escudo del equipo, usando la ruta del archivo de imagen seleccionada por el usuario
+	        this.estadioLocal = estadioLocal;
+	    }
+
+	    public String getNombre() {
+	        return nombre;
+	    }
+
+	    public String getCategoria() {
+	        return categoria;
+	    }
+
+	    public String getColores() {
+	        return colores;
+	    }
+
+	    public String getEscudo() {
+	        return escudo;
+	    }
+
+	    public Estadio getEstadioLocal() {
+	        return estadioLocal;
+	    }
+
+	    @Override
+	    public String toString() {
+	        return "Equipo: " + nombre +
+	               "\nCategoría: " + categoria +
+	               "\nColores: "
+
+
+}

@@ -99,7 +99,7 @@ public class AdminClub extends Administrador {
 
         int capacidad = 0;
         try {
-            capacidad = Integer.parseInt(capacidadStr);
+            capacidad = Integer.parseInt(capacidadStr); // Преобразуем строку в число
             if (capacidad <= 0) {
                 JOptionPane.showMessageDialog(null, "La capacidad debe ser mayor que cero.");
                 return;
@@ -180,11 +180,11 @@ public class AdminClub extends Administrador {
 
         ImageIcon escudo = equipo.getEscudo();
         if (escudo != null) {
-            
+            // Масштабируем изображение до 150x150 (можно поменять размеры)
             Image img = escudo.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
             ImageIcon escudoEscalado = new ImageIcon(img);
 
-            
+            // Показываем окно с ИЗОБРАЖЕНИЕМ + текстом
             JOptionPane.showMessageDialog(
                 null,
                 "Equipo registrado:\n" +

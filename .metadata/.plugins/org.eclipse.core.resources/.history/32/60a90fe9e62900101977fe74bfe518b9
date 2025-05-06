@@ -1,10 +1,8 @@
 package torneo_futbal;
 
-import java.awt.Image;
 import java.io.File;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 public class AdminClub extends Administrador {
@@ -99,7 +97,7 @@ public class AdminClub extends Administrador {
 
         int capacidad = 0;
         try {
-            capacidad = Integer.parseInt(capacidadStr);
+            capacidad = Integer.parseInt(capacidadStr); // Преобразуем строку в число
             if (capacidad <= 0) {
                 JOptionPane.showMessageDialog(null, "La capacidad debe ser mayor que cero.");
                 return;
@@ -129,7 +127,7 @@ public class AdminClub extends Administrador {
 
         
         String rutaEscudo = "./escudos/" + nombreEscudo;
-        System.out.println("Ruta del escudo: " + rutaEscudo);  // Выводим путь в консоль для отладки
+
         
         File archivoEscudo = new File(rutaEscudo);
         if (!archivoEscudo.exists()) {
@@ -178,29 +176,7 @@ public class AdminClub extends Administrador {
         Equipo equipo = new Equipo(nombreEquipo, categoria, colores, rutaEscudo, estadioSeleccionado);
         club.agregarEquipo(equipo);
 
-        ImageIcon escudo = equipo.getEscudo();
-        if (escudo != null) {
-            
-            Image img = escudo.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-            ImageIcon escudoEscalado = new ImageIcon(img);
-
-            
-            JOptionPane.showMessageDialog(
-                null,
-                "Equipo registrado:\n" +
-                "Nombre: " + equipo.getNombre() + "\n" +
-                "Categoría: " + equipo.getCategoria() + "\n" +
-                "Colores: " + equipo.getColores() + "\n" +
-                "Estadio Local: " + equipo.getEstadioLocal().getNombre(),
-                "Escudo del equipo",
-                JOptionPane.INFORMATION_MESSAGE,
-                escudoEscalado
-            );
-        } else {
-            JOptionPane.showMessageDialog(null, "Equipo registrado, pero no se pudo cargar el escudo.");
-        }
-
-
+        JOptionPane.showMessageDialog(null, "Equipo registrado exitosamente:\n" + equipo);
     
     }
 

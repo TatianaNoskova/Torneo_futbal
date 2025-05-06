@@ -8,14 +8,14 @@ public class Club {
     private String direccion;
     
     private List<Estadio> estadios;
-    private List<Equipo> equipos;
+   // private List<Equipo> equipos;
 
     public Club(String nombre, String direccion) {
         this.nombre = nombre;
         this.direccion = direccion;
        
         this.estadios = new ArrayList<>();
-        this.equipos = new ArrayList<>();
+   //     this.equipos = new ArrayList<>();
 
     }
 
@@ -35,14 +35,15 @@ public class Club {
     	return estadios;
     }
 
-    
-    public void agregarEquipo(Equipo equipo) {
-    	equipos.add(equipo);
-	}
-    
-    public List<Equipo> getEquipos() {
-    	return equipos;
-    }
+   // public List<Equipo> getEquipos() {
+   //     return equipos;
+    //}
+
+   
+
+    //public void agregarEquipo(Equipo equipo) {
+  //      equipos.add(equipo);
+   // }
 
     
 
