@@ -8,6 +8,7 @@ public class Torneo {
 	String nombreTorneo;
 	String anoTorneo;
 	private List<Equipo> equiposParticipantes = new ArrayList<>();
+	private List<String> partidosSorteados; // Хранение матчей
 	
 	public Torneo(String nombreTorneo, String anoTorneo) {
 		
@@ -32,6 +33,16 @@ public class Torneo {
 	public List<Equipo> getEquiposParticipantes() {
 	    return equiposParticipantes;
 	}
+	
+	// Метод для получения сортировки матчей
+    public List<String> obtenerPartidosSorteados() {
+        return partidosSorteados;
+    }
+
+    // Метод для сохранения результата розыгрыша
+    public void setPartidosSorteados(List<String> partidos) {
+        partidosSorteados = partidos;
+    }
 	
 	
 	

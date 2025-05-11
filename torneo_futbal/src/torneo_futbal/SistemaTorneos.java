@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SistemaTorneos {
-	
-	private List<Torneo> torneos;
+
+    private List<Torneo> torneos;
 
     public SistemaTorneos() {
         torneos = new ArrayList<>();
@@ -18,7 +18,8 @@ public class SistemaTorneos {
 
     // Метод для получения всех турниров
     public List<Torneo> obtenerTorneos() {
-        return torneos;
+    	//!!!!!!!return torneos; //!!!!!!! вернуть после подключение к БАЗЕ ДАННЫХ
+    	return SistemaRegistro.torneosRegistrados; // это хак, убрать после подключения в БД
     }
 
     // Метод для отображения информации о турнире
@@ -27,7 +28,11 @@ public class SistemaTorneos {
             System.out.println("No hay torneos registrados.");
         } else {
             for (Torneo torneo : torneos) {
-                System.out.println(torneo);
+                System.out.println("Torneo: " + torneo.getNombreTorneo() + " (" + torneo.getAnoTorneo() + ")");
+                System.out.println("Equipos participantes:");
+                for (Equipo equipo : torneo.getEquiposParticipantes()) {
+                    System.out.println(" - " + equipo.getNombre());
+                }
             }
         }
     }

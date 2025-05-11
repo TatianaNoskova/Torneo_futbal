@@ -1,16 +1,23 @@
 package torneo_futbal;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
 
 public class AdminAFA extends Administrador {
 	
+	private List<Arbitro> arbitrosRegistrados;
+	
 	public AdminAFA(String nombre, String apellido, String email) {
         super(nombre, apellido, email, "Administrador AFA");
+        
+        this.arbitrosRegistrados = new ArrayList<>();
         
     }
 	
@@ -20,6 +27,8 @@ public class AdminAFA extends Administrador {
 	public void setSistemaTorneos(SistemaTorneos sistemaTorneos) {
 	    this.sistemaTorneos = sistemaTorneos;
 	}
+	
+	
 
 	
 	 @Override
@@ -29,6 +38,7 @@ public class AdminAFA extends Administrador {
 	        while (!salir) {
 	            String[] opciones = {
 	                    "Organizar torneo",
+	                    "Registrar árbitro",
 	                    "Asignar fechas y horarios",
 	                    "Capturar estadísticas y resultados",
 	                    "Salir"
@@ -55,6 +65,7 @@ public class AdminAFA extends Administrador {
 	    private void procesarOpcion(String seleccion) {
 	        switch (seleccion) {
 	            case "Organizar torneo" -> mostrarSubmenuOrganizarTorneo();
+	            case "Registrar árbitro" -> registrarArbitro();
 	            case "Asignar fechas y horarios" -> mostrarSubmenuAsignarFechas();
 	            case "Capturar estadísticas y resultados" -> mostrarSubmenuCapturarResultados();
 	            default -> JOptionPane.showMessageDialog(null, "Opción no valida.");
@@ -112,8 +123,12 @@ public class AdminAFA extends Administrador {
 	        );
 
 	        if (seleccion != null && !seleccion.equals("Volver")) {
-	            JOptionPane.showMessageDialog(null,
-	                    "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
+	            switch (seleccion) {
+	                case "Sortear partido" -> sortearPartidosPorCategoria();
+	                // Если выбран другой пункт, выводим сообщение
+	                default -> JOptionPane.showMessageDialog(null,
+	                        "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
+	            }
 	        }
 	    }
 
@@ -273,6 +288,126 @@ public class AdminAFA extends Administrador {
 	            }
 	        }
 	    }
+	    
+	    private void registrarArbitro() {
+	        // Логика регистрации арбитра
+	        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del árbitro:");
+	        String apellido = JOptionPane.showInputDialog("Ingrese el apellido del árbitro:");
+	        String email = JOptionPane.showInputDialog("Ingrese el correo electrónico del árbitro:");
+	        
+
+	        if (nombre == null || apellido == null || email == null || nombre.isBlank() || apellido.isBlank() || email.isBlank()) {
+	            JOptionPane.showMessageDialog(null, "Datos inválidos. Intenta nuevamente.");
+	            return;
+	        }
+
+	        // Проверка, существует ли уже арбитр с таким email
+	        for (Arbitro arbitro : arbitrosRegistrados) {
+	            if (arbitro.getEmail().equals(email)) {
+	                JOptionPane.showMessageDialog(null, "Este correo ya está registrado como árbitro.");
+	                return;
+	            }
+	        }
+
+	        // Создание нового арбитра и добавление его в систему
+	        Arbitro nuevoArbitro = new Arbitro(nombre, apellido, email);
+	        arbitrosRegistrados.add(nuevoArbitro);
+	        JOptionPane.showMessageDialog(null, "¡Arbitro registrado exitosamente!");
+	    }
+	    
+	 // Метод для сортировки матчей по категориям
+	    private void sortearPartidosPorCategoria() {
+	        // Получаем список турниров
+	        List<Torneo> torneos = sistemaTorneos.obtenerTorneos();
+
+	        if (torneos.isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "No hay torneos registrados.");
+	            return;
+	        }
+
+	        // Выбор турнира
+	        String[] nombres = new String[torneos.size()];
+	        for (int i = 0; i < torneos.size(); i++) {
+	            nombres[i] = torneos.get(i).getNombreTorneo();
+	        }
+
+	        String seleccion = (String) JOptionPane.showInputDialog(
+	            null, "Seleccione un torneo:", "Torneos",
+	            JOptionPane.QUESTION_MESSAGE, null, nombres, nombres[0]
+	        );
+
+	        if (seleccion == null) return;
+
+	        // Находим выбранный турнир
+	        Torneo torneoActual = null;
+	        for (Torneo t : torneos) {
+	            if (t.getNombreTorneo().equals(seleccion)) {
+	                torneoActual = t;
+	                break;
+	            }
+	        }
+
+	        if (torneoActual == null) {
+	            JOptionPane.showMessageDialog(null, "Torneo no encontrado.");
+	            return;
+	        }
+
+	        // Получаем список команд для выбранного турнира
+	        List<Equipo> participantes = torneoActual.getEquiposParticipantes();
+
+	        // Группируем команды по категориям
+	        Map<String, List<Equipo>> equiposPorCategoria = new HashMap<>();
+	        for (Equipo equipo : participantes) {
+	            String categoria = equipo.getCategoria();
+	            if (!equiposPorCategoria.containsKey(categoria)) {
+	                equiposPorCategoria.put(categoria, new ArrayList<>());
+	            }
+	            equiposPorCategoria.get(categoria).add(equipo);
+	        }
+
+	        if (equiposPorCategoria.isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "No hay categorías con equipos.");
+	            return;
+	        }
+
+	        // Выбор категории
+	        String[] categorias = new String[equiposPorCategoria.size()];
+	        int i = 0;
+	        for (String categoria : equiposPorCategoria.keySet()) {
+	            categorias[i++] = categoria;
+	        }
+
+	        String seleccionCategoria = (String) JOptionPane.showInputDialog(
+	            null, "Seleccione categoría:", "Categorías",
+	            JOptionPane.QUESTION_MESSAGE, null, categorias, categorias[0]
+	        );
+
+	        if (seleccionCategoria == null) return;
+
+	        // Получаем список команд для выбранной категории
+	        List<Equipo> equipos = equiposPorCategoria.get(seleccionCategoria);
+	        if (equipos.size() != 8 && equipos.size() != 16) {
+	            JOptionPane.showMessageDialog(null, "Debe haber 8 o 16 equipos para sortear. Actualmente hay: " + equipos.size());
+	            return;
+	        }
+
+	        // Сортируем команды случайным образом
+	        Collections.shuffle(equipos);
+
+	        // Формируем и выводим результат (пары команд)
+	        StringBuilder resultado = new StringBuilder("Partidos sorteados:\n");
+	        for (int j = 0; j < equipos.size(); j += 2) {
+	            resultado.append(equipos.get(j).getNombre())
+	                     .append(" vs ")
+	                     .append(equipos.get(j + 1).getNombre())
+	                     .append("\n");
+	        }
+
+	        JOptionPane.showMessageDialog(null, resultado.toString());
+	    }
+
+	    
+
 
 	}
 

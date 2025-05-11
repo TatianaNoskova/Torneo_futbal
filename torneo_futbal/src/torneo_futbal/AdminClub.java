@@ -82,6 +82,10 @@ public class AdminClub extends Administrador {
         }
 
         club = new Club(nombre, direccion);
+        
+     // ВАЖНО: добавляем в список зарегистрированных клубов
+        SistemaRegistro.clubesRegistrados.add(club);
+        
         JOptionPane.showMessageDialog(null, "Club registrado exitosamente:\n" + club);
     }
     
@@ -115,6 +119,9 @@ public class AdminClub extends Administrador {
 
         Estadio estadio = new Estadio(nombre, direccion, capacidad);
         club.agregarEstadio(estadio);
+        
+        club.agregarEstadio(estadio); // ← сохраняется в списке самого клуба
+        
         JOptionPane.showMessageDialog(null, "Estadio registrado exitosamente:\n" + estadio);
     }
     

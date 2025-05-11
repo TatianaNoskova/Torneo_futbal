@@ -14,7 +14,11 @@ public class SistemaRegistro {
     private List<String> dtEmails;
     private List<String> clubes;
     
+    
+    
     private SistemaTorneos sistemaTorneos;
+    
+    
     
    
     public SistemaRegistro() {
@@ -43,6 +47,7 @@ public class SistemaRegistro {
    }
     
     public static List<Club> clubesRegistrados = new ArrayList<>();
+    public static List<Torneo> torneosRegistrados = new ArrayList<>();
     
     
     public void iniciarRegistro() {
