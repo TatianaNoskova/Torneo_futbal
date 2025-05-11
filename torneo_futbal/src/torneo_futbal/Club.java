@@ -9,6 +9,11 @@ public class Club {
     
     private List<Estadio> estadios;
     private List<Equipo> equipos;
+    private List<Disciplina> disciplinas;
+    private List<InstalacionDeportiva> instalaciones;
+    private List<DirectorTecnico> directoresTecnicos;
+
+
 
     public Club(String nombre, String direccion) {
         this.nombre = nombre;
@@ -16,6 +21,13 @@ public class Club {
        
         this.estadios = new ArrayList<>();
         this.equipos = new ArrayList<>();
+        this.disciplinas = new ArrayList<>();   
+        this.instalaciones = new ArrayList<>();
+        this.directoresTecnicos = new ArrayList<>();
+
+
+        
+        
 
     }
 
@@ -43,6 +55,31 @@ public class Club {
     public List<Equipo> getEquipos() {
     	return equipos;
     }
+    
+    public void agregarDisciplina(Disciplina disciplina) {
+    	disciplinas.add(disciplina);
+    }
+    
+    public List<Disciplina> getDisciplinas() {
+        return disciplinas;
+    }
+    
+    public void agregarInstalacion(InstalacionDeportiva instalacion) {
+    	instalaciones.add(instalacion);
+    }
+
+    public List<InstalacionDeportiva> getInstalaciones() {
+        return instalaciones;
+    }
+    
+    public void agregarDirectorTecnico(DirectorTecnico dt) {
+        directoresTecnicos.add(dt);
+    }
+
+    public List<DirectorTecnico> getDirectoresTecnicos() {
+        return directoresTecnicos;
+    }
+
 
     
 

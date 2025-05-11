@@ -1,12 +1,25 @@
 package torneo_futbal;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.swing.JOptionPane;
 
 public class AdminAFA extends Administrador {
 	
 	public AdminAFA(String nombre, String apellido, String email) {
         super(nombre, apellido, email, "Administrador AFA");
+        
     }
+	
+	
+	private SistemaTorneos sistemaTorneos = new SistemaTorneos();
+
+	public void setSistemaTorneos(SistemaTorneos sistemaTorneos) {
+	    this.sistemaTorneos = sistemaTorneos;
+	}
 
 	
 	 @Override
@@ -15,7 +28,7 @@ public class AdminAFA extends Administrador {
 
 	        while (!salir) {
 	            String[] opciones = {
-	                    "Crear torneo",
+	                    "Organizar torneo",
 	                    "Asignar fechas y horarios",
 	                    "Capturar estadísticas y resultados",
 	                    "Salir"
@@ -41,23 +54,24 @@ public class AdminAFA extends Administrador {
 
 	    private void procesarOpcion(String seleccion) {
 	        switch (seleccion) {
-	            case "Crear torneo" -> mostrarSubmenuCrearTorneo();
+	            case "Organizar torneo" -> mostrarSubmenuOrganizarTorneo();
 	            case "Asignar fechas y horarios" -> mostrarSubmenuAsignarFechas();
 	            case "Capturar estadísticas y resultados" -> mostrarSubmenuCapturarResultados();
 	            default -> JOptionPane.showMessageDialog(null, "Opción no valida.");
 	        }
 	    }
 
-	    private void mostrarSubmenuCrearTorneo() {
+	    private void mostrarSubmenuOrganizarTorneo() {
 	        String[] opciones = {
-	                "Registrar equipo",
+	                "Registrar nuevo torneo",
+	                "Registrar equipo por categoria",
 	                "Registrar árbitro",
 	                "Volver"
 	        };
 
 	        String seleccion = (String) JOptionPane.showInputDialog(
 	                null,
-	                "Submenú - Crear torneo",
+	                "Submenú - Organizar torneo",
 	                "Opciones",
 	                JOptionPane.QUESTION_MESSAGE,
 	                null,
@@ -65,9 +79,16 @@ public class AdminAFA extends Administrador {
 	                opciones[0]
 	        );
 
-	        if (seleccion != null && !seleccion.equals("Volver")) {
-	            JOptionPane.showMessageDialog(null,
-	                    "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
+	        if (seleccion == null || seleccion.equals("Volver")) {
+	            return;
+	        }
+
+	        switch (seleccion) {
+	            case "Registrar nuevo torneo" -> registrarNuevoTorneo();
+	            case "Registrar equipo por categoria" -> registrarEquiposEnTorneoPorCategoria();
+	            
+	         // Otros opciones van a ser agregadas despues
+	            default -> JOptionPane.showMessageDialog(null, "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
 	        }
 	    }
 
@@ -120,6 +141,140 @@ public class AdminAFA extends Administrador {
 	                    "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
 	        }
 	    }
-	
+	    private void registrarNuevoTorneo() {
+	        String nombreTorneo = JOptionPane.showInputDialog("Ingrese el nombre del torneo:");
+	        String anoTorneo = JOptionPane.showInputDialog("Ingrese el año del torneo:");
 
-}
+	        if (nombreTorneo == null || anoTorneo == null || nombreTorneo.isBlank() || anoTorneo.isBlank()) {
+	            JOptionPane.showMessageDialog(null, "Datos inválidos. Por favor, intenta nuevamente.");
+	            return;
+	        }
+
+	        // Создание нового турнира
+	        Torneo nuevoTorneo = new Torneo(nombreTorneo, anoTorneo);
+	        sistemaTorneos.agregarTorneo(nuevoTorneo);
+
+	        JOptionPane.showMessageDialog(null, "Torneo creado exitosamente:\n" + 
+	                                      "Nombre: " + nuevoTorneo.getNombreTorneo() + 
+	                                      "\nAño: " + nuevoTorneo.getAnoTorneo());
+	        
+	        mostrarSubmenuOrganizarTorneo();
+	        
+	    }
+	    
+
+	    // Метод для отображения всех турниров
+	    public void mostrarTorneos() {
+	        sistemaTorneos.mostrarTorneos();
+	    }
+	    
+	    private void registrarEquiposEnTorneoPorCategoria() {
+	        // Obtener torneos disponibles
+	        List<Torneo> torneos = sistemaTorneos.obtenerTorneos();
+	        if (torneos.isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "No hay torneos registrados.");
+	            return;
+	        }
+
+	        String[] nombresTorneos = new String[torneos.size()];
+	        for (int i = 0; i < torneos.size(); i++) {
+	            nombresTorneos[i] = torneos.get(i).getNombreTorneo();
+	        }
+
+	        String seleccionTorneo = (String) JOptionPane.showInputDialog(
+	            null,
+	            "Seleccione el torneo al que desea agregar equipos:",
+	            "Torneo",
+	            JOptionPane.QUESTION_MESSAGE,
+	            null,
+	            nombresTorneos,
+	            nombresTorneos[0]
+	        );
+
+	        if (seleccionTorneo == null) {
+	            return;
+	        }
+
+	        Torneo torneoSeleccionado = null;
+	        for (Torneo torneo : torneos) {
+	            if (torneo.getNombreTorneo().equals(seleccionTorneo)) {
+	                torneoSeleccionado = torneo;
+	                break;
+	            }
+	        }
+
+	        // Reunir todas las categorías disponibles de todos los equipos
+	        Set<String> categoriasDisponibles = new HashSet<>();
+	        for (Club club : SistemaRegistro.clubesRegistrados) {
+	            for (Equipo equipo : club.getEquipos()) {
+	                categoriasDisponibles.add(equipo.getCategoria());
+	            }
+	        }
+
+	        if (categoriasDisponibles.isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "No hay equipos registrados en ningún club.");
+	            return;
+	        }
+
+	        String[] categoriasArray = categoriasDisponibles.toArray(new String[0]);
+	        String categoriaSeleccionada = (String) JOptionPane.showInputDialog(
+	            null,
+	            "Seleccione la categoría:",
+	            "Categoría",
+	            JOptionPane.QUESTION_MESSAGE,
+	            null,
+	            categoriasArray,
+	            categoriasArray[0]
+	        );
+
+	        if (categoriaSeleccionada == null) {
+	            return;
+	        }
+
+	        // Mostrar equipos disponibles de esa categoría
+	        List<Equipo> equiposCategoria = new ArrayList<>();
+	        for (Club club : SistemaRegistro.clubesRegistrados) {
+	            for (Equipo equipo : club.getEquipos()) {
+	                if (equipo.getCategoria().equalsIgnoreCase(categoriaSeleccionada)) {
+	                    equiposCategoria.add(equipo);
+	                }
+	            }
+	        }
+
+	        if (equiposCategoria.isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "No hay equipos en esa categoría.");
+	            return;
+	        }
+
+	        String[] nombresEquipos = new String[equiposCategoria.size()];
+	        for (int i = 0; i < equiposCategoria.size(); i++) {
+	            nombresEquipos[i] = equiposCategoria.get(i).getNombre();
+	        }
+
+	        String seleccionEquipo = (String) JOptionPane.showInputDialog(
+	            null,
+	            "Seleccione el equipo para agregar al torneo:",
+	            "Equipo",
+	            JOptionPane.QUESTION_MESSAGE,
+	            null,
+	            nombresEquipos,
+	            nombresEquipos[0]
+	        );
+
+	        if (seleccionEquipo == null) {
+	            return;
+	        }
+
+	        for (Equipo equipo : equiposCategoria) {
+	            if (equipo.getNombre().equals(seleccionEquipo)) {
+	                torneoSeleccionado.agregarEquipoParticipante(equipo);
+	                JOptionPane.showMessageDialog(null, "Equipo agregado exitosamente al torneo.");
+	                return;
+	            }
+	        }
+	    }
+
+	}
+
+
+

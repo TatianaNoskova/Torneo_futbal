@@ -24,6 +24,7 @@ public class AdminClub extends Administrador {
                     "Registrar club",
                     "Registrar estadio",
                     "Registrar equipo",
+                    "Registrar disciplina y instalacion deportiva",
                     "Registrar director técnico",
                     "Gestionar disciplinas y actividades",
                     "Reservar/administrar instalaciones",
@@ -56,6 +57,9 @@ public class AdminClub extends Administrador {
             case "Registrar club" -> registrarClub();
             case "Registrar estadio" -> registrarEstadio();
             case "Registrar equipo" -> registrarEquipo();
+            case "Registrar disciplina y instalacion deportiva" -> registrarDisciplinaYInstalacion();
+            case "Registrar director técnico" -> registrarDirectorTecnico();
+
             // Otros opciones van a ser agregadas despues
             
             default -> JOptionPane.showMessageDialog(null,
@@ -199,10 +203,123 @@ public class AdminClub extends Administrador {
         } else {
             JOptionPane.showMessageDialog(null, "Equipo registrado, pero no se pudo cargar el escudo.");
         }
+    }
+        
+    private void registrarDisciplinaYInstalacion() {
+        if (club == null) {
+            JOptionPane.showMessageDialog(null, "Primero debe registrar un club.");
+            return;
+        }
+
+        String nombreDisciplina = JOptionPane.showInputDialog("Ingrese el nombre de la disciplina:");
+        String nombreInstalacion = JOptionPane.showInputDialog("Ingrese el nombre de la instalación deportiva:");
+
+        if (nombreDisciplina == null || nombreInstalacion == null ||
+            nombreDisciplina.isBlank() || nombreInstalacion.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
+            return;
+        }
+
+        // Crear disciplina e instalación
+        Disciplina disciplina = new Disciplina(nombreDisciplina);
+        InstalacionDeportiva instalacion = new InstalacionDeportiva(nombreInstalacion, disciplina);
+
+        // Registrar en el club
+        club.agregarDisciplina(disciplina);
+        club.agregarInstalacion(instalacion);
+
+        // Mostrar confirmación
+        JOptionPane.showMessageDialog(
+            null,
+            "Disciplina e instalación registradas correctamente:\n" +
+            "Disciplina: " + disciplina.getNombreDisciplina() + "\n" +
+            "Instalación: " + instalacion.getNombreInstalacion()
+        );
+    }
+
+
+    private void registrarDirectorTecnico() {
+        if (club == null) {
+            JOptionPane.showMessageDialog(null, "Primero debe registrar un club.");
+            return;
+        }
+
+        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del Director Técnico:");
+        String apellido = JOptionPane.showInputDialog("Ingrese el apellido del Director Técnico:");
+        
+        String email = null;
+        boolean emailValido = false;
+        
+        while (!emailValido) {
+            email = JOptionPane.showInputDialog("Ingrese el email del Director Técnico:");
+
+            if (email == null || email.isBlank()) {
+                JOptionPane.showMessageDialog(null, "El email no puede estar vacío.");
+                continue;
+            }
+
+            // Проверка на наличие символа "@"
+            if (!email.contains("@")) {
+                JOptionPane.showMessageDialog(null, "El email ingresado no es válido. Debe contener '@'.");
+                continue;
+            }
+
+            emailValido = true;  // Выход из цикла, если email корректный
+        }
+
+        // Если имя или фамилия пустые
+        if (nombre == null || apellido == null || nombre.isBlank() || apellido.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
+            return;
+        }
+        
+        List<Equipo> equipos = club.getEquipos();
+        if (equipos.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Primero debe registrar al menos un equipo.");
+            return;
+        }
+        String[] nombresEquipos = new String[equipos.size()];
+        for (int i = 0; i < equipos.size(); i++) {
+            nombresEquipos[i] = equipos.get(i).getNombre();
+        }
+
+        String seleccion = (String) JOptionPane.showInputDialog(
+                null,
+                "Seleccione el equipo al que desea asignar el Director Técnico:",
+                "Equipo",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                nombresEquipos,
+                nombresEquipos[0]
+        );
+
+        if (seleccion == null) {
+            JOptionPane.showMessageDialog(null, "No se seleccionó ningún equipo.");
+            return;
+        }
+
+        Equipo equipoSeleccionado = null;
+        for (Equipo eq : equipos) {
+            if (eq.getNombre().equals(seleccion)) {
+                equipoSeleccionado = eq;
+                break;
+            }
+        }
+
+        DirectorTecnico dt = new DirectorTecnico(nombre, apellido, email);
+        equipoSeleccionado.setDirectorTecnico(dt);
+        
+
+        JOptionPane.showMessageDialog(null,
+        	    "Director Técnico asignado al equipo " + equipoSeleccionado.getNombre() + ":\n" +
+        	    dt.getNombre() + " " + dt.getApellido() + "\nEmail: " + dt.getEmail());
+    }
 
 
     
-    }
+    
+    
+    
 
 
 

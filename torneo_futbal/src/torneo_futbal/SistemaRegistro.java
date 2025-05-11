@@ -13,9 +13,15 @@ public class SistemaRegistro {
     private List<String> arbitroEmails;
     private List<String> dtEmails;
     private List<String> clubes;
-
+    
+    private SistemaTorneos sistemaTorneos;
+    
+   
     public SistemaRegistro() {
         personasRegistradas = new ArrayList<>();
+        
+        sistemaTorneos = new SistemaTorneos();
+        
 
         // "BASE DE DATOS"
         adminAFAEmails = new ArrayList<>();
@@ -34,12 +40,11 @@ public class SistemaRegistro {
         dtEmails = new ArrayList<>();
         dtEmails.add("director.tecnico1@futbol.com");
         
-        
-        
-        
-        
-    }
-
+   }
+    
+    public static List<Club> clubesRegistrados = new ArrayList<>();
+    
+    
     public void iniciarRegistro() {
     	String email = null;
     	boolean emailValido = false;
@@ -137,9 +142,12 @@ public class SistemaRegistro {
         Persona nuevaPersona;
 
         switch (rolSeleccionado) {
-            case "Administrador AFA":
-                nuevaPersona = new AdminAFA(nombre, apellido, email);
-                break;
+        case "Administrador AFA":
+            // Создаем объект AdminAFA
+        	 
+            nuevaPersona = new AdminAFA(nombre, apellido, email);
+                  
+            break;
             case "Administrador de club":
                 nuevaPersona = new AdminClub(nombre, apellido, email);
                 break;

@@ -1,0 +1,23 @@
+package torneo_futbal;
+
+public class Torneo {
+	
+	String nombreTorneo;
+	String anoTorneo;
+	public Torneo(String nombreTorneo, String anoTorneo) {
+		
+		this.nombreTorneo = nombreTorneo;
+		this.anoTorneo = anoTorneo;
+	}
+	public String getNombreTorneo() {
+		return nombreTorneo;
+	}
+	
+	public String getAnoTorneo() {
+		return anoTorneo;
+	}
+	
+	
+	
+
+}

@@ -11,6 +11,8 @@ public class Equipo {
 	    private String colores;
 	    private String rutaEscudo; 
 	    private Estadio estadioLocal;
+	    
+	    private DirectorTecnico directorTecnico;
 
 	    public Equipo(String nombre, String categoria, String colores, String rutaEscudo, Estadio estadioLocal) {
 	        this.nombre = nombre;
@@ -45,6 +47,14 @@ public class Equipo {
 
 	    public Estadio getEstadioLocal() {
 	        return estadioLocal;
+	    }
+	    
+	    public DirectorTecnico getDirectorTecnico() {
+	        return directorTecnico;
+	    }
+
+	    public void setDirectorTecnico(DirectorTecnico directorTecnico) {
+	        this.directorTecnico = directorTecnico;
 	    }
 
 	    @Override
