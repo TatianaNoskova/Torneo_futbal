@@ -1,0 +1,35 @@
+package torneo_futbal;
+
+public class Partido {
+	
+	private Estadio estadio;
+	
+	private Equipo equipo1;  // Первая команда
+    private Equipo equipo2;  // Вторая команда
+    
+    public Partido(Equipo equipo1, Equipo equipo2) {
+        this.equipo1 = equipo1;
+        this.equipo2 = equipo2;
+    }
+
+    public Estadio getEstadio() {
+        return estadio;
+    }
+
+    public void setEstadio(Estadio estadio) {
+        this.estadio = estadio;
+    }
+    
+ // Геттер для первой команды
+    public Equipo getEquipo1() {
+        return equipo1;
+    }
+
+    // Геттер для второй команды
+    public Equipo getEquipo2() {
+        return equipo2;
+    }
+
+    
+
+}

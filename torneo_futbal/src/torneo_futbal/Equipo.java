@@ -56,6 +56,8 @@ public class Equipo {
 	    public void setDirectorTecnico(DirectorTecnico directorTecnico) {
 	        this.directorTecnico = directorTecnico;
 	    }
+	    
+	    
 
 	    @Override
 	    public String toString() {
