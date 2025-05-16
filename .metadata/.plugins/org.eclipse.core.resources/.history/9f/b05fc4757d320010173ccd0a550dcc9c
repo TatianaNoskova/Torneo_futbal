@@ -311,13 +311,7 @@ public class AdminAFA extends Administrador {
 	        while (true) {
 	            email = JOptionPane.showInputDialog("Ingrese el correo electrónico del árbitro:");
 
-	            // Если пользователь нажал "Cancelar", выходим из метода
-	            if (email == null) {
-	                JOptionPane.showMessageDialog(null, "Registro cancelado por el usuario.");
-	                return;
-	            }
-
-	            if (email.isBlank()) {
+	            if (email == null || email.isBlank()) {
 	                JOptionPane.showMessageDialog(null, "Correo electrónico no puede estar vacío.");
 	                continue;
 	            }
