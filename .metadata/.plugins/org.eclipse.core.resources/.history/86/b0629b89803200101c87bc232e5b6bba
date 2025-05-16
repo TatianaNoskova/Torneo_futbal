@@ -12,11 +12,6 @@ public class Partido {
     
     private LocalDate fecha;
     private LocalTime hora; 
-    
-    private Arbitro arbitro;
-    private int golesEquipo1;
-    private int golesEquipo2;
-    private boolean resultadoCapturado = false;
 
     
     public Partido(Equipo equipo1, Equipo equipo2) {
@@ -60,22 +55,6 @@ public class Partido {
     public void setHora(LocalTime hora) {
         this.hora = hora;
     }
-    
-    public void setArbitro(Arbitro arbitro) {
-    	this.arbitro = arbitro;
-    	}
-
-    public Arbitro getArbitro() {
-    	return this.arbitro;
-    	}
-    public int getGolesEquipo1() { return golesEquipo1; }
-    public int getGolesEquipo2() { return golesEquipo2; }
-
-    public void setGolesEquipo1(int goles) { this.golesEquipo1 = goles; }
-    public void setGolesEquipo2(int goles) { this.golesEquipo2 = goles; }
-
-    public boolean resultadoCapturado() { return resultadoCapturado; }
-    public void setResultadoCapturado(boolean capturado) { this.resultadoCapturado = capturado; }
     
     @Override
     public String toString() {

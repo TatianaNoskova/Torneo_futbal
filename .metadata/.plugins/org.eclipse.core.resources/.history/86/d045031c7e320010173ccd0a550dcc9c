@@ -131,8 +131,6 @@ public class AdminAFA extends Administrador {
 	            switch (seleccion) {
 	                case "Sortear partido" -> sortearPartidosPorCategoria();
 	                case "Asignar sedes y horarios" -> asignarSedeAPartido();
-	                case "Asignar árbitros" -> asignarArbitro();
-	      
 	                // Если выбран другой пункт, выводим сообщение
 	                default -> JOptionPane.showMessageDialog(null,
 	                        "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
@@ -142,7 +140,7 @@ public class AdminAFA extends Administrador {
 
 	    private void mostrarSubmenuCapturarResultados() {
 	        String[] opciones = {
-	                "Ingresar resultados de los partidos",
+	                "Generar fixture",
 	                "Tabla de goleadores",
 	                "Estadísticas por equipo",
 	                "Estadísticas individuales de jugadores",
@@ -159,19 +157,9 @@ public class AdminAFA extends Administrador {
 	                opciones[0]
 	        );
 
-	        if (seleccion == null || seleccion.equals("Volver")) {
-	            return;
-	        }
-
-	        switch (seleccion) {
-	            case "Ingresar resultados de los partidos":
-	                ingresarResultados();
-	                break;
-
-	            default:
-	                JOptionPane.showMessageDialog(null,
-	                        "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
-	                break;
+	        if (seleccion != null && !seleccion.equals("Volver")) {
+	            JOptionPane.showMessageDialog(null,
+	                    "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
 	        }
 	    }
 	    private void registrarNuevoTorneo() {
@@ -323,7 +311,7 @@ public class AdminAFA extends Administrador {
 	        while (true) {
 	            email = JOptionPane.showInputDialog("Ingrese el correo electrónico del árbitro:");
 
-	            
+	            // Если пользователь нажал "Cancelar", выходим из метода
 	            if (email == null) {
 	                JOptionPane.showMessageDialog(null, "Registro cancelado por el usuario.");
 	                return;
@@ -603,12 +591,6 @@ public class AdminAFA extends Administrador {
 	        JOptionPane.showMessageDialog(null, "¡Estadio y horario asignados correctamente!");
 
 	        mostrarSubmenuAsignarFechas();
-	    }
-	    
-	    private void asignarArbitro() {
-	    }
-	    
-	    private void ingresarResultados() {
 	    }
 
 }

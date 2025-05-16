@@ -142,7 +142,7 @@ public class AdminAFA extends Administrador {
 
 	    private void mostrarSubmenuCapturarResultados() {
 	        String[] opciones = {
-	                "Ingresar resultados de los partidos",
+	                "Ingresar resultados",
 	                "Tabla de goleadores",
 	                "Estadísticas por equipo",
 	                "Estadísticas individuales de jugadores",
@@ -159,19 +159,14 @@ public class AdminAFA extends Administrador {
 	                opciones[0]
 	        );
 
-	        if (seleccion == null || seleccion.equals("Volver")) {
-	            return;
-	        }
-
-	        switch (seleccion) {
-	            case "Ingresar resultados de los partidos":
-	                ingresarResultados();
-	                break;
-
-	            default:
-	                JOptionPane.showMessageDialog(null,
-	                        "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
-	                break;
+	        if (seleccion != null && !seleccion.equals("Volver")) {
+	            JOptionPane.showMessageDialog(null,
+	            		
+	            		switch (seleccion) {
+	            		case "Ingresar resultados de los partidos":
+	            		ingresarResultados();
+	            		break;
+	                    "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
 	        }
 	    }
 	    private void registrarNuevoTorneo() {
