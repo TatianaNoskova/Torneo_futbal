@@ -7,8 +7,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 public class AdminClub extends Administrador {
+	
+	private Club club;
 
-  private Club club;
+ 
 
   public AdminClub(String nombre, String apellido, String email) {
     super(nombre, apellido, email, "Administrador del Club");

@@ -12,14 +12,14 @@ public class SistemaRegistro {
     private List<String> socioEmails;
     private List<String> arbitroEmails;
     private List<String> dtEmails;
-    private List<String> clubes;
+    //private List<String> clubes;
 
-    private SistemaTorneos sistemaTorneos;
+   // private SistemaTorneos sistemaTorneos;
 
     public SistemaRegistro() {
         personasRegistradas = new ArrayList<>();
 
-        sistemaTorneos = new SistemaTorneos();
+       // sistemaTorneos = new SistemaTorneos();
 
         // "BASE DE DATOS"
         adminAFAEmails = new ArrayList<>();

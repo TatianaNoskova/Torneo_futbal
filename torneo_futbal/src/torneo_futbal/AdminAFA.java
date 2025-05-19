@@ -1,5 +1,8 @@
 package torneo_futbal;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import javax.swing.JOptionPane;
 
@@ -106,8 +111,8 @@ public class AdminAFA extends Administrador {
 	    private void mostrarSubmenuAsignarFechas() {
 	        String[] opciones = {
 	                "Sortear partido",
-	                "Generar los grupos",
-	                "Asignar sedes",
+	                //"Generar los grupos",
+	                "Asignar sedes y horarios",
 	                "Asignar árbitros",
 	                "Volver"
 	        };
@@ -125,6 +130,9 @@ public class AdminAFA extends Administrador {
 	        if (seleccion != null && !seleccion.equals("Volver")) {
 	            switch (seleccion) {
 	                case "Sortear partido" -> sortearPartidosPorCategoria();
+	                case "Asignar sedes y horarios" -> asignarSedeAPartido();
+	                case "Asignar árbitros" -> asignarArbitro();
+	      
 	                // Если выбран другой пункт, выводим сообщение
 	                default -> JOptionPane.showMessageDialog(null,
 	                        "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
@@ -134,7 +142,7 @@ public class AdminAFA extends Administrador {
 
 	    private void mostrarSubmenuCapturarResultados() {
 	        String[] opciones = {
-	                "Generar fixture",
+	                "Ingresar resultados de los partidos",
 	                "Tabla de goleadores",
 	                "Estadísticas por equipo",
 	                "Estadísticas individuales de jugadores",
@@ -151,9 +159,19 @@ public class AdminAFA extends Administrador {
 	                opciones[0]
 	        );
 
-	        if (seleccion != null && !seleccion.equals("Volver")) {
-	            JOptionPane.showMessageDialog(null,
-	                    "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
+	        if (seleccion == null || seleccion.equals("Volver")) {
+	            return;
+	        }
+
+	        switch (seleccion) {
+	            case "Ingresar resultados de los partidos":
+	                ingresarResultados();
+	                break;
+
+	            default:
+	                JOptionPane.showMessageDialog(null,
+	                        "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
+	                break;
 	        }
 	    }
 	    private void registrarNuevoTorneo() {
@@ -282,6 +300,13 @@ public class AdminAFA extends Administrador {
 
 	        for (Equipo equipo : equiposCategoria) {
 	            if (equipo.getNombre().equals(seleccionEquipo)) {
+	            	// Проверка: если команда уже добавлена
+	                if (torneoSeleccionado.getEquiposParticipantes().contains(equipo)) {
+	                    JOptionPane.showMessageDialog(null, "Este equipo ya está registrado en el torneo.");
+	                    return;
+	                }
+
+	                // Добавляем только если не добавлена раньше
 	                torneoSeleccionado.agregarEquipoParticipante(equipo);
 	                JOptionPane.showMessageDialog(null, "Equipo agregado exitosamente al torneo.");
 	                return;
@@ -293,27 +318,49 @@ public class AdminAFA extends Administrador {
 	        // Логика регистрации арбитра
 	        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del árbitro:");
 	        String apellido = JOptionPane.showInputDialog("Ingrese el apellido del árbitro:");
-	        String email = JOptionPane.showInputDialog("Ingrese el correo electrónico del árbitro:");
-	        
+	        String email;
 
-	        if (nombre == null || apellido == null || email == null || nombre.isBlank() || apellido.isBlank() || email.isBlank()) {
-	            JOptionPane.showMessageDialog(null, "Datos inválidos. Intenta nuevamente.");
-	            return;
-	        }
+	        while (true) {
+	            email = JOptionPane.showInputDialog("Ingrese el correo electrónico del árbitro:");
 
-	        // Проверка, существует ли уже арбитр с таким email
-	        for (Arbitro arbitro : arbitrosRegistrados) {
-	            if (arbitro.getEmail().equals(email)) {
-	                JOptionPane.showMessageDialog(null, "Este correo ya está registrado como árbitro.");
+	            
+	            if (email == null) {
+	                JOptionPane.showMessageDialog(null, "Registro cancelado por el usuario.");
 	                return;
 	            }
-	        }
 
-	        // Создание нового арбитра и добавление его в систему
-	        Arbitro nuevoArbitro = new Arbitro(nombre, apellido, email);
-	        arbitrosRegistrados.add(nuevoArbitro);
-	        JOptionPane.showMessageDialog(null, "¡Arbitro registrado exitosamente!");
+	            if (email.isBlank()) {
+	                JOptionPane.showMessageDialog(null, "Correo electrónico no puede estar vacío.");
+	                continue;
+	            }
+
+	            if (!email.contains("@")) {
+	                JOptionPane.showMessageDialog(null, "Correo electrónico inválido. Debe contener '@'.");
+	                continue;
+	            }
+
+	            // Проверка, существует ли уже арбитр с таким email
+	            boolean yaRegistrado = false;
+	            for (Arbitro arbitro : arbitrosRegistrados) {
+	                if (arbitro.getEmail().equals(email)) {
+	                    JOptionPane.showMessageDialog(null, "Este correo ya está registrado como árbitro.");
+	                    yaRegistrado = true;
+	                    break;
+	                }
+	            }
+
+	            if (yaRegistrado) {
+	                continue;
+	            }
+
+	            // Всё в порядке — создаём арбитра
+	            Arbitro nuevoArbitro = new Arbitro(nombre, apellido, email);
+	            arbitrosRegistrados.add(nuevoArbitro);
+	            JOptionPane.showMessageDialog(null, "¡Árbitro registrado exitosamente!");
+	            break; // Выход из while после успешной регистрации
+	        }
 	    }
+
 	    
 	 // Метод для сортировки матчей по категориям
 	    private void sortearPartidosPorCategoria() {
@@ -381,10 +428,17 @@ public class AdminAFA extends Administrador {
 	            null, "Seleccione categoría:", "Categorías",
 	            JOptionPane.QUESTION_MESSAGE, null, categorias, categorias[0]
 	        );
+	        
+	     // Проверка: уже есть матчи по этой категории?
+	        List<Partido> partidosExistentes = torneoActual.getPartidosPorCategoria(seleccionCategoria);
+	        if (!partidosExistentes.isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "Los partidos para esta categoría ya fueron sorteados.");
+	            return;
+	        }
 
 	        if (seleccionCategoria == null) return;
 
-	        // Получаем список команд для выбранной категории
+	        // Obtenemos la lista de los equipos para la categoria elegida
 	        List<Equipo> equipos = equiposPorCategoria.get(seleccionCategoria);
 	        if (equipos.size() != 8 && equipos.size() != 16) {
 	            JOptionPane.showMessageDialog(null, "Debe haber 8 o 16 equipos para sortear. Actualmente hay: " + equipos.size());
@@ -397,19 +451,166 @@ public class AdminAFA extends Administrador {
 	        // Формируем и выводим результат (пары команд)
 	        StringBuilder resultado = new StringBuilder("Partidos sorteados:\n");
 	        for (int j = 0; j < equipos.size(); j += 2) {
-	            resultado.append(equipos.get(j).getNombre())
+	            Equipo eq1 = equipos.get(j);
+	            Equipo eq2 = equipos.get(j + 1);
+
+	            Partido partido = new Partido(eq1, eq2); // создаём матч
+	            torneoActual.agregarPartido(partido);    // добавляем матч в турнир
+
+	            resultado.append(eq1.getNombre())
 	                     .append(" vs ")
-	                     .append(equipos.get(j + 1).getNombre())
+	                     .append(eq2.getNombre())
 	                     .append("\n");
 	        }
 
 	        JOptionPane.showMessageDialog(null, resultado.toString());
+	        
+	        mostrarSubmenuAsignarFechas();
+	       
+	    }
+	    private void asignarSedeAPartido() {
+	        // Получаем список турниров
+	        List<Torneo> torneos = sistemaTorneos.obtenerTorneos();
+	        if (torneos.isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "No hay torneos disponibles.");
+	            return;
+	        }
+
+	        // 1. Выбор турнира
+	        String[] nombres = torneos.stream().map(Torneo::getNombreTorneo).toArray(String[]::new);
+	        String seleccion = (String) JOptionPane.showInputDialog(null, "Seleccione un torneo:", "Torneos", JOptionPane.QUESTION_MESSAGE, null, nombres, nombres[0]);
+	        if (seleccion == null) return;
+
+	        Torneo torneo = torneos.stream().filter(t -> t.getNombreTorneo().equals(seleccion)).findFirst().orElse(null);
+	        if (torneo == null) return;
+
+	        // 2. Выбор категории
+	        Set<String> categorias = torneo.getCategoriasDePartidos();
+	        if (categorias.isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "No hay partidos registrados en este torneo.");
+	            return;
+	        }
+
+	        String[] categoriasArray = categorias.toArray(new String[0]);
+	        String categoria = (String) JOptionPane.showInputDialog(null, "Seleccione categoría:", "Categorías", JOptionPane.QUESTION_MESSAGE, null, categoriasArray, categoriasArray[0]);
+	        if (categoria == null) return;
+
+	        // 3. Список матчей без стадиона
+	        List<Partido> partidos = torneo.getPartidosPorCategoria(categoria).stream()
+	                .filter(p -> p.getEstadio() == null)
+	                .toList();
+
+	        if (partidos.isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "Todos los partidos ya tienen sede asignada.");
+	            return;
+	        }
+
+	        Partido partido = (Partido) JOptionPane.showInputDialog(
+	                null,
+	                "Seleccione un partido:",
+	                "Partidos sin sede",
+	                JOptionPane.QUESTION_MESSAGE,
+	                null,
+	                partidos.toArray(),
+	                partidos.get(0)
+	        );
+	        if (partido == null) return;
+
+	        // 4. Получаем все стадионы из зарегистрированных клубов
+	        List<Estadio> estadios = new ArrayList<>();
+	        for (Club club : SistemaRegistro.clubesRegistrados) {
+	            estadios.addAll(club.getEstadios());
+	        }
+
+	        if (estadios.isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "No hay estadios registrados.");
+	            return;
+	        }
+
+	        Estadio estadio = (Estadio) JOptionPane.showInputDialog(
+	                null,
+	                "Seleccione un estadio:",
+	                "Estadios disponibles",
+	                JOptionPane.QUESTION_MESSAGE,
+	                null,
+	                estadios.toArray(),
+	                estadios.get(0)
+	        );
+	        if (estadio == null) return;
+
+	        // 5. Выбор даты и времени для матча
+	        String fechaStr = JOptionPane.showInputDialog("Ingrese la fecha del partido (dd/MM/yyyy):");
+	        if (fechaStr == null || fechaStr.isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "Fecha inválida.");
+	            return;
+	        }
+
+	        LocalDate fecha;
+	        try {
+	            // Преобразуем строку в LocalDate с нужным форматом
+	            fecha = LocalDate.parse(fechaStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+	        } catch (DateTimeParseException e) {
+	            JOptionPane.showMessageDialog(null, "Fecha inválida.");
+	            return;
+	        }
+
+	        String horaStr = JOptionPane.showInputDialog("Ingrese la hora del partido (HH:mm):");
+	        if (horaStr == null || horaStr.isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "Hora inválida.");
+	            return;
+	        }
+
+	        LocalTime hora;
+	        try {
+	            // Преобразуем строку в LocalTime с нужным форматом
+	            hora = LocalTime.parse(horaStr, DateTimeFormatter.ofPattern("HH:mm"));
+	        } catch (DateTimeParseException e) {
+	            JOptionPane.showMessageDialog(null, "Hora inválida.");
+	            return;
+	        }
+
+	        // Устанавливаем дату и время на матч
+	        partido.setFecha(fecha);   // Передаем LocalDate
+	        partido.setHora(hora);     // Передаем LocalTime
+
+	        // 6. Проверка на конфликты времени на этом стадионе
+	        boolean conflicto = false;
+	        for (Partido otro : torneo.getPartidosPorCategoria(categoria)) {
+	            if (otro == partido) continue; // Не сравниваем сам с собой
+	            if (estadio.equals(otro.getEstadio()) && otro.getFecha() != null && otro.getHora() != null) {
+	                // Проверка на ту же дату
+	                if (otro.getFecha().equals(partido.getFecha())) {
+	                    // Преобразуем часы в LocalTime, если они не LocalTime
+	                    LocalTime horaOtro = otro.getHora();
+	                    LocalTime horaPartido = partido.getHora();
+
+	                    long diferenciaMinutos = Math.abs(Duration.between(horaOtro, horaPartido).toMinutes());
+	                    if (diferenciaMinutos < 180) { // Меньше 3 часов
+	                        conflicto = true;
+	                        break;
+	                    }
+	                }
+	            }
+	        }
+
+	        if (conflicto) {
+	            JOptionPane.showMessageDialog(null, "Ya hay un partido programado en ese estadio en un horario muy cercano.");
+	            return;
+	        }
+
+	        // 7. Назначаем стадион для матча
+	        partido.setEstadio(estadio);
+	        JOptionPane.showMessageDialog(null, "¡Estadio y horario asignados correctamente!");
+
+	        mostrarSubmenuAsignarFechas();
+	    }
+	    
+	    private void asignarArbitro() {
+	    }
+	    
+	    private void ingresarResultados() {
 	    }
 
-	    
-
-
-	}
-
+}
 
 

@@ -6,7 +6,6 @@ import java.util.List;
 public class Club {
     private String nombre;
     private String direccion;
-
     private List<Estadio> estadios;
     private List<Equipo> equipos;
     private List<Disciplina> disciplinas;
@@ -64,7 +63,6 @@ public class Club {
     public List<InstalacionDeportiva> getInstalaciones() {
         return instalaciones;
     }
-
     public void agregarDirectorTecnico(DirectorTecnico dt) {
         directoresTecnicos.add(dt);
     }
@@ -78,3 +76,4 @@ public class Club {
         return "Nombre del club: " + nombre + "\nDirección: " + direccion;
     }
 }
+

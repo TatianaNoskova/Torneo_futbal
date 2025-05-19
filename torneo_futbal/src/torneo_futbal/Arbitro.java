@@ -76,7 +76,10 @@ public class Arbitro extends Usuario {
 		}
 
 	        
-            
+	 @Override
+	 public String toString() {
+	 return nombre + apellido;
+	 }           
         
     
 }
