@@ -12,100 +12,91 @@ public class SistemaRegistro {
     private List<String> socioEmails;
     private List<String> arbitroEmails;
     private List<String> dtEmails;
-    private List<String> clubes;
-    
-    
-    
-    private SistemaTorneos sistemaTorneos;
-    
-    
-    
-   
+    //private List<String> clubes;
+
+   // private SistemaTorneos sistemaTorneos;
+
     public SistemaRegistro() {
         personasRegistradas = new ArrayList<>();
-        
-        sistemaTorneos = new SistemaTorneos();
-        
+
+       // sistemaTorneos = new SistemaTorneos();
 
         // "BASE DE DATOS"
         adminAFAEmails = new ArrayList<>();
         adminAFAEmails.add("admin@afa.com");
-        
+
         adminClubEmails = new ArrayList<>();
         adminClubEmails.add("clubadmin1@club.com");
 
         socioEmails = new ArrayList<>();
         socioEmails.add("juan.socio@gmail.com");
         socioEmails.add("ana.socia@yahoo.com");
-        
+
         arbitroEmails = new ArrayList<>();
         arbitroEmails.add("arbitro1@futbol.com");
-        
+
         dtEmails = new ArrayList<>();
         dtEmails.add("director.tecnico1@futbol.com");
-        
-   }
-    
+
+    }
+
     public static List<Club> clubesRegistrados = new ArrayList<>();
     public static List<Torneo> torneosRegistrados = new ArrayList<>();
-    
-    
+
     public void iniciarRegistro() {
-    	String email = null;
-    	boolean emailValido = false;
+        String email = null;
+        boolean emailValido = false;
 
-    	while (!emailValido) {
-    	    email = JOptionPane.showInputDialog("Ingrese su correo electrónico:");
+        while (!emailValido) {
+            email = JOptionPane.showInputDialog("Ingrese su correo electrónico:");
 
-    	    if (email == null) {
-    	        JOptionPane.showMessageDialog(null, "Operación cancelada.");
-    	        return;
-    	    }
+            if (email == null) {
+                JOptionPane.showMessageDialog(null, "Operación cancelada.");
+                return;
+            }
 
-    	    if (email.contains("@")) {
-    	        emailValido = true;
-    	    } else {
-    	        JOptionPane.showMessageDialog(null, "Correo inválido. Asegúrese de incluir '@'.");
-    	    }
-    	}
-
+            if (email.contains("@")) {
+                emailValido = true;
+            } else {
+                JOptionPane.showMessageDialog(null, "Correo inválido. Asegúrese de incluir '@'.");
+            }
+        }
 
         if (emailExiste(email)) {
             JOptionPane.showMessageDialog(null, "Este correo electrónico ya está registrado.");
             return;
         }
-        
-     
+
         if (arbitroEmails.contains(email)) {
-            
-            String nombre = "<Nombre del Árbitro>";  
-            String apellido = "<Apellido del Árbitro>";  
+
+            String nombre = "<Nombre del Árbitro>";
+            String apellido = "<Apellido del Árbitro>";
             Persona nuevaPersona = new Arbitro(nombre, apellido, email);
             personasRegistradas.add(nuevaPersona);
-            
+
             JOptionPane.showMessageDialog(null, "Has iniciado sesión como Árbitro.");
             nuevaPersona.mostrarMenu();
             return;
-        };  
-        
+        }
+        ;
+
         if (dtEmails.contains(email)) {
 
-            
-            String nombre = "<Nombre del DT>";  
-            String apellido = "<Apellido del DT>";  
+            String nombre = "<Nombre del DT>";
+            String apellido = "<Apellido del DT>";
             Persona nuevaPersona = new DirectorTecnico(nombre, apellido, email);
             personasRegistradas.add(nuevaPersona);
-            
-            JOptionPane.showMessageDialog(null, "Has iniciado sesión como Director Técnico del club (funcionalidad en desarrollo)");
+
+            JOptionPane.showMessageDialog(null,
+                    "Has iniciado sesión como Director Técnico del club (funcionalidad en desarrollo)");
             nuevaPersona.mostrarMenu();
             return;
-        }; 
-        	
+        }
+        ;
 
         String nombre = JOptionPane.showInputDialog("Ingrese su nombre:");
         String apellido = JOptionPane.showInputDialog("Ingrese su apellido:");
 
-        
         String[] opcionesRol = {
                 "Administrador AFA",
                 "Administrador de club",
@@ -120,8 +111,7 @@ public class SistemaRegistro {
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 opcionesRol,
-                opcionesRol[0]
-        );
+                opcionesRol[0]);
 
         if (rolSeleccionado == null) {
             JOptionPane.showMessageDialog(null, "No se seleccionó ninguna opción.");
@@ -133,47 +123,42 @@ public class SistemaRegistro {
             case "Administrador AFA" -> adminAFAEmails.contains(email);
             case "Administrador de club" -> adminClubEmails.contains(email);
             case "Socio del club" -> socioEmails.contains(email);
-            
+
             default -> true; // Público general - para todos
         };
 
         if (!verificado) {
-            JOptionPane.showMessageDialog(null, "Error de verificación: el correo no está autorizado para el rol seleccionado.");
+            JOptionPane.showMessageDialog(null,
+                    "Error de verificación: el correo no está autorizado para el rol seleccionado.");
             return;
         }
 
-        
-        
         Persona nuevaPersona;
 
         switch (rolSeleccionado) {
-        case "Administrador AFA":
-            // Создаем объект AdminAFA
-        	 
-            nuevaPersona = new AdminAFA(nombre, apellido, email);
-                  
-            break;
+            case "Administrador AFA":
+                // Создаем объект AdminAFA
+
+                nuevaPersona = new AdminAFA(nombre, apellido, email);
+
+                break;
             case "Administrador de club":
                 nuevaPersona = new AdminClub(nombre, apellido, email);
                 break;
             case "Socio del club":
                 nuevaPersona = new Socio(nombre, apellido, email);
                 break;
-            
-                
+
             default: // Público general
                 nuevaPersona = new Publico(nombre, apellido, email);
         }
-        
+
         personasRegistradas.add(nuevaPersona);
-        
-     
+
         JOptionPane.showMessageDialog(null, "¡Te has registrado con éxito como: " + rolSeleccionado + "!");
         nuevaPersona.mostrarMenu();
 
     }
-    
-    
 
     private boolean emailExiste(String email) {
         for (Persona persona : personasRegistradas) {
@@ -189,12 +174,5 @@ public class SistemaRegistro {
         }
         return false;
     }
-
-
-    
-
-
-    
-
 
 }

@@ -81,7 +81,7 @@ public class AdminAFA extends Administrador {
 	        String[] opciones = {
 	                "Registrar nuevo torneo",
 	                "Registrar equipo por categoria",
-	                
+	                "Registrar árbitro",
 	                "Volver"
 	        };
 
