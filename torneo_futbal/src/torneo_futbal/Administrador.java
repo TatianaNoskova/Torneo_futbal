@@ -2,20 +2,15 @@ package torneo_futbal;
 
 public abstract class Administrador extends Persona {
 	
-	protected String email;
     protected String rol;
 
     public Administrador(String nombre, String apellido, String email, String rol) {
-        super(nombre, apellido);
-        this.email = email;
+        super(nombre, apellido, email);
+   
         this.rol = rol;
     }
 
-	public String getEmail() {
-		return email;
-	}
-
-	public String getRol() {
+		public String getRol() {
 		return rol;
 	}
     

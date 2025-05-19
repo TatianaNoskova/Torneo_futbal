@@ -2,17 +2,15 @@ package torneo_futbal;
 
 import javax.swing.JOptionPane;
 
-public class DirectorTecnico extends Persona {
+public class DirectorTecnico extends Usuario {
 	
 	protected String email;
     protected String rol;
-    protected Club club;
 
 	public DirectorTecnico(String nombre, String apellido, String email) {
-		super(nombre, apellido);
+		super(nombre, apellido, email, "Director Técnico");
 		
 		this.email = email;
-        this.rol = "Director Técnico";
 	
 	}
 	
@@ -23,18 +21,18 @@ public class DirectorTecnico extends Persona {
 		
 	@Override
     public void mostrarMenu() {
+		boolean salir = false;
 		
-		String[] opciones = {
+		while (!salir) {
+			String[] opciones = {
                 "Registrar jugadores",
                 "Hacer alineación",
                 "Consultar estadísticas",
                 "Salir"
-        };
+			};
         
-        boolean continuar = true; 
-
-        while (continuar) {
-            String seleccion = (String) JOptionPane.showInputDialog(
+        
+         String seleccion = (String) JOptionPane.showInputDialog(
                     null,
                     "Bienvenido " + nombre + " " + apellido + "\n\nSelecciona una opción:",
                     "Menú Director Técnico",
@@ -45,27 +43,44 @@ public class DirectorTecnico extends Persona {
             );
 
             if (seleccion == null || seleccion.equals("Salir")) {
-                JOptionPane.showMessageDialog(null, "Saliendo del menú.");
-                continuar=false;
-            	}else {
-
-            switch (seleccion) {
-                case "Registrar jugadores":
-                    JOptionPane.showMessageDialog(null, "Registrar jugadores (función aún no implementada)");
-                    break;
-                case "Hacer alineación":
-                    JOptionPane.showMessageDialog(null, "Hacer alineación (función aún no implementada)");
-                    break;
-                case "Consultar estadísticas":
-                	JOptionPane.showMessageDialog(null, "Demonstración de la estadística (función aún no implementada)");
-                	break;
-                default:
-                    JOptionPane.showMessageDialog(null, "Opción no válida.");
+            	salir = true;
+            } else {
+            	procesarOpcion(seleccion);
             	}
-            }
-        }
-    
-		
+		}
 	}
-
+	
+	private void procesarOpcion(String seleccion) {
+	    switch (seleccion) {
+	        case "Registrar jugadores" -> mostrarSubmenuRegistrarJugadores();
+	        case "Hacer alineación"-> mostrarSubmenuHacerAlineacion();
+	        case "Consultar estadísticas" -> mostrarSubmenuConsultarEstadisticas();
+	        default -> JOptionPane.showMessageDialog(null, "Opción no válida.");
+	    }
+	}
+	    
+	private void mostrarSubmenuRegistrarJugadores() {
+		String seleccion = "Registrar Jugadores";
+			JOptionPane.showMessageDialog(
+			null,
+			"Has seleccionado: " + seleccion + "\n(Función aún no implementada)"
+			 );
+	}
+	
+	private void mostrarSubmenuHacerAlineacion() {
+		String seleccion = "Hacer alineacion";
+			JOptionPane.showMessageDialog(
+			null,
+			"Has seleccionado: " + seleccion + "\n(Función aún no implementada)"
+			 );
+	}
+	
+	private void mostrarSubmenuConsultarEstadisticas() {
+		String seleccion = "Consultar estadisticas";
+			JOptionPane.showMessageDialog(
+			null,
+			"Has seleccionado: " + seleccion + "\n(Función aún no implementada)"
+			);
+	}
+	
 }
