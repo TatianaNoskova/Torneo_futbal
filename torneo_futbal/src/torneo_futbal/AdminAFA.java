@@ -2,6 +2,7 @@ package torneo_futbal;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -581,10 +582,225 @@ public class AdminAFA extends Administrador {
 	    }
 	    
 	    private void asignarArbitro() {
-	    }
+	    	List<Torneo> torneos = sistemaTorneos.obtenerTorneos();
+	    	if (torneos.isEmpty()) {
+	    	JOptionPane.showMessageDialog(null, "No hay torneos disponibles.");
+	    	return;
+	    	}
+
+	    	// Paso 1: Seleccionar torneo
+	    	String[] nombresTorneos = torneos.stream()
+	    	.map(Torneo::getNombreTorneo)
+	    	.toArray(String[]::new);
+
+	    	String seleccionTorneo = (String) JOptionPane.showInputDialog(
+	    	null,
+	    	"Seleccione un torneo:",
+	    	"Torneos",
+	    	JOptionPane.QUESTION_MESSAGE,
+	    	null,
+	    	nombresTorneos,
+	    	nombresTorneos[0]
+	    	);
+	    	if (seleccionTorneo == null) return;
+
+	    	Torneo torneo = torneos.stream()
+	    	.filter(t -> t.getNombreTorneo().equals(seleccionTorneo))
+	    	.findFirst()
+	    	.orElse(null);
+	    	if (torneo == null) return;
+
+	    	// Paso 2: Seleccionar categoría con partidos
+	    	Set<String> categorias = torneo.getCategoriasDePartidos();
+	    	if (categorias.isEmpty()) {
+	    	JOptionPane.showMessageDialog(null, "No hay partidos registrados en este torneo.");
+	    	return;
+	    	}
+
+	    	String[] categoriasArray = categorias.toArray(new String[0]);
+	    	String categoriaSeleccionada = (String) JOptionPane.showInputDialog(
+	    	null,
+	    	"Seleccione categoría:",
+	    	"Categorías",
+	    	JOptionPane.QUESTION_MESSAGE,
+	    	null,
+	    	categoriasArray,
+	    	categoriasArray[0]
+	    	);
+	    	if (categoriaSeleccionada == null) return;
+
+	    	// Paso 3: Filtrar partidos que ya tienen sede, fecha, hora, pero aún no tienen árbitro
+	    	List<Partido> partidosElegibles = torneo.getPartidosPorCategoria(categoriaSeleccionada).stream()
+	    	.filter(p -> p.getArbitro() == null &&
+	    	p.getEstadio() != null &&
+	    	p.getFecha() != null &&
+	    	p.getHora() != null)
+	    	.toList();
+
+	    	if (partidosElegibles.isEmpty()) {
+	    	JOptionPane.showMessageDialog(null, "No hay partidos disponibles para asignar árbitro. Asegúrese de que el partido tenga sede, fecha y hora asignadas.");
+	    	return;
+	    	}
+
+	    	Partido partidoSeleccionado = (Partido) JOptionPane.showInputDialog(
+	    	null,
+	    	"Seleccione un partido:",
+	    	"Partidos disponibles",
+	    	JOptionPane.QUESTION_MESSAGE,
+	    	null,
+	    	partidosElegibles.toArray(),
+	    	partidosElegibles.get(0)
+	    	);
+	    	if (partidoSeleccionado == null) return;
+
+	    	// Paso 4: Seleccionar árbitro registrado
+	    	if (arbitrosRegistrados.isEmpty()) {
+	    	JOptionPane.showMessageDialog(null, "No hay árbitros registrados.");
+	    	return;
+	    	}
+
+	    	Arbitro arbitroSeleccionado = (Arbitro) JOptionPane.showInputDialog(
+	    	null,
+	    	"Seleccione un árbitro:",
+	    	"Árbitros disponibles",
+	    	JOptionPane.QUESTION_MESSAGE,
+	    	null,
+	    	arbitrosRegistrados.toArray(),
+	    	arbitrosRegistrados.get(0)
+	    	);
+	    	if (arbitroSeleccionado == null) return;
+
+	    	// Paso 5: Verificar si el árbitro ya tiene un partido asignado en un horario cercano (menos de 3 horas), en la misma fecha
+	    	boolean ocupado = false;
+	    	LocalDate fechaPartido = partidoSeleccionado.getFecha();
+	    	LocalTime horaPartido = partidoSeleccionado.getHora();
+
+	    	for (Torneo t : sistemaTorneos.obtenerTorneos()) {
+	    	for (String cat : t.getCategoriasDePartidos()) {
+	    	for (Partido p : t.getPartidosPorCategoria(cat)) {
+	    	if (arbitroSeleccionado.equals(p.getArbitro()) &&
+	    	p.getFecha() != null &&
+	    	p.getHora() != null &&
+	    	p.getFecha().equals(fechaPartido)) {
+
+	    	long diferencia = Math.abs(Duration.between(p.getHora(), horaPartido).toMinutes());
+	    	if (diferencia < 180) {
+	    	ocupado = true;
+	    	break;
+	    	}
+	    	}
+	    	}
+	    	if (ocupado) break;
+	    	}
+	    	if (ocupado) break;
+	    	}
+
+	    	if (ocupado) {
+	    	JOptionPane.showMessageDialog(null, "El árbitro ya tiene un partido asignado en un horario cercano ese día.");
+	    	return;
+	    	}
+
+	    	// Paso 6: Asignar árbitro al partido
+	    	partidoSeleccionado.setArbitro(arbitroSeleccionado);
+	    	JOptionPane.showMessageDialog(null, "¡Árbitro asignado correctamente al partido!");
+
+	    	mostrarSubmenuAsignarFechas();
+	    	}
 	    
 	    private void ingresarResultados() {
-	    }
+	    	List<Torneo> torneos = sistemaTorneos.obtenerTorneos();
+	    	if (torneos.isEmpty()) {
+	    	JOptionPane.showMessageDialog(null, "No hay torneos disponibles.");
+	    	return;
+	    	}
+
+	    	// Paso 1: Seleccionar torneo
+	    	String[] nombresTorneos = torneos.stream()
+	    	.map(Torneo::getNombreTorneo)
+	    	.toArray(String[]::new);
+
+	    	String seleccionTorneo = (String) JOptionPane.showInputDialog(
+	    	null, "Seleccione un torneo:", "Torneos",
+	    	JOptionPane.QUESTION_MESSAGE, null,
+	    	nombresTorneos, nombresTorneos[0]
+	    	);
+	    	if (seleccionTorneo == null) return;
+
+	    	Torneo torneo = torneos.stream()
+	    	.filter(t -> t.getNombreTorneo().equals(seleccionTorneo))
+	    	.findFirst().orElse(null);
+	    	if (torneo == null) return;
+
+	    	// Paso 2: Seleccionar categoría
+	    	Set<String> categorias = torneo.getCategoriasDePartidos();
+	    	if (categorias.isEmpty()) {
+	    	JOptionPane.showMessageDialog(null, "No hay partidos registrados para este torneo.");
+	    	return;
+	    	}
+
+	    	String[] categoriasArray = categorias.toArray(new String[0]);
+	    	String categoriaSeleccionada = (String) JOptionPane.showInputDialog(
+	    	null, "Seleccione una categoría:", "Categorías",
+	    	JOptionPane.QUESTION_MESSAGE, null,
+	    	categoriasArray, categoriasArray[0]
+	    	);
+	    	if (categoriaSeleccionada == null) return;
+
+	    	// Paso 3: Filtrar partidos jugados (fecha y hora ya pasaron)
+	    	List<Partido> partidosJugados = torneo.getPartidosPorCategoria(categoriaSeleccionada).stream()
+	    	.filter(p -> p.getFecha() != null && p.getHora() != null &&
+	    	p.getEstadio() != null && p.getArbitro() != null &&
+	    	LocalDateTime.of(p.getFecha(), p.getHora()).isBefore(LocalDateTime.now()) &&
+	    	!p.resultadoCapturado()) // el resultado ya no había ingresado
+	    	.toList();
+
+	    	if (partidosJugados.isEmpty()) {
+	    	JOptionPane.showMessageDialog(null, "No hay partidos finalizados sin resultados.");
+	    	return;
+	    	}
+
+	    	// Paso 4: Seleccionar partido
+	    	Partido partido = (Partido) JOptionPane.showInputDialog(
+	    	null,
+	    	"Seleccione un partido para ingresar el resultado:",
+	    	"Partidos finalizados",
+	    	JOptionPane.QUESTION_MESSAGE,
+	    	null,
+	    	partidosJugados.toArray(),
+	    	partidosJugados.get(0)
+	    	);
+	    	if (partido == null) return;
+
+	    	// Paso 5: Ingresar goles
+	    	int golesEquipo1, golesEquipo2;
+
+	    	try {
+	    	String input1 = JOptionPane.showInputDialog("Ingrese los goles para " + partido.getEquipo1().getNombre() + ":");
+	    	if (input1 == null) return;
+	    	golesEquipo1 = Integer.parseInt(input1);
+
+	    	String input2 = JOptionPane.showInputDialog("Ingrese los goles para " + partido.getEquipo2().getNombre() + ":");
+	    	if (input2 == null) return;
+	    	golesEquipo2 = Integer.parseInt(input2);
+	    	} catch (NumberFormatException e) {
+	    	JOptionPane.showMessageDialog(null, "Formato de número inválido.");
+	    	return;
+	    	}
+
+	    	// Paso 6: Registrar resultado
+	    	partido.setGolesEquipo1(golesEquipo1);
+	    	partido.setGolesEquipo2(golesEquipo2);
+	    	partido.setResultadoCapturado(true); // control para no ingresar el resultado dos veces
+
+	    	String mensajeResultado = "¡Resultado registrado correctamente!\n" +
+	    	partido.getEquipo1().getNombre() + " " + partido.getGolesEquipo1() +
+	    	" - " + partido.getGolesEquipo2() + " " + partido.getEquipo2().getNombre();
+
+	    	JOptionPane.showMessageDialog(null, mensajeResultado);
+
+
+	    	mostrarSubmenuCapturarResultados();
+	    	}
 
 }
 
