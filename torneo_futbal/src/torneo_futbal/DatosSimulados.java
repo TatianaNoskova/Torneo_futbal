@@ -134,7 +134,7 @@ public class DatosSimulados {
         club7.agregarEquipo(equipo7);
         club8.agregarEquipo(equipo8);
 
-        // Добавим в статический список
+        // Agregamos los clubes en la lista statica
         SistemaRegistro.clubesRegistrados.add(club1);
         SistemaRegistro.clubesRegistrados.add(club2);
         SistemaRegistro.clubesRegistrados.add(club3);
@@ -144,11 +144,11 @@ public class DatosSimulados {
         SistemaRegistro.clubesRegistrados.add(club7);
         SistemaRegistro.clubesRegistrados.add(club8);
 
-        // Турнир
+        // Torneo
         Torneo torneo1 = new Torneo("Torneo Nacional 2025", "2025");
         SistemaRegistro.torneosRegistrados.add(torneo1);
 
-        // Добавляем команду в турнир
+        // Agregamos el equipo en la lista statica
         torneo1.agregarEquipoParticipante(equipo1);
         torneo1.agregarEquipoParticipante(equipo2);
         torneo1.agregarEquipoParticipante(equipo3);

@@ -242,78 +242,80 @@ public class AdminClub extends Administrador {
   }
 
   private void registrarDirectorTecnico() {
-    if (club == null) {
-      JOptionPane.showMessageDialog(null, "Primero debe registrar un club.");
-      return;
-    }
+	  if (club == null) {
+	  JOptionPane.showMessageDialog(null, "Primero debe registrar un club.");
+	  return;
+	  }
 
-    String nombre = JOptionPane.showInputDialog("Ingrese el nombre del Director Técnico:");
-    String apellido = JOptionPane.showInputDialog("Ingrese el apellido del Director Técnico:");
+	  String nombre = JOptionPane.showInputDialog("Ingrese el nombre del Director Técnico:");
+	  String apellido = JOptionPane.showInputDialog("Ingrese el apellido del Director Técnico:");
+	  String email = null;
+	  boolean emailValido = false;
+	  while (!emailValido) {
+	  email = JOptionPane.showInputDialog("Ingrese el email del Director Técnico:");
 
-    String email = null;
-    boolean emailValido = false;
+	  if (email == null || email.isBlank()) {
+	  JOptionPane.showMessageDialog(null, "El email no puede estar vacío.");
+	  continue;
+	  }
 
-    while (!emailValido) {
-      email = JOptionPane.showInputDialog("Ingrese el email del Director Técnico:");
+	  // Проверка на наличие символа "@"
+	  if (!email.contains("@")) {
+	  JOptionPane.showMessageDialog(null, "El email ingresado no es válido. Debe contener '@'.");
+	  continue;
+	  }
 
-      if (email == null || email.isBlank()) {
-        JOptionPane.showMessageDialog(null, "El email no puede estar vacío.");
-        continue;
-      }
+	  emailValido = true; // Выход из цикла, если email корректный
+	  }
+	  String password = JOptionPane.showInputDialog("Ingrese la contraseña del Director Técnico:");
+	  if (password == null || password.isBlank()) {
+	  JOptionPane.showMessageDialog(null, "La contraseña no puede estar vacía.");
+	  return;
+	  }
 
-      // Проверка на наличие символа "@"
-      if (!email.contains("@")) {
-        JOptionPane.showMessageDialog(null, "El email ingresado no es válido. Debe contener '@'.");
-        continue;
-      }
+	  // Если имя или фамилия пустые
+	  if (nombre == null || apellido == null || nombre.isBlank() || apellido.isBlank()) {
+	  JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
+	  return;
+	  }
+	  List<Equipo> equipos = club.getEquipos();
+	  if (equipos.isEmpty()) {
+	  JOptionPane.showMessageDialog(null, "Primero debe registrar al menos un equipo.");
+	  return;
+	  }
+	  String[] nombresEquipos = new String[equipos.size()];
+	  for (int i = 0; i < equipos.size(); i++) {
+	  nombresEquipos[i] = equipos.get(i).getNombre();
+	  }
 
-      emailValido = true; // Выход из цикла, если email корректный
-    }
+	  String seleccion = (String) JOptionPane.showInputDialog(
+	  null,
+	  "Seleccione el equipo al que desea asignar el Director Técnico:",
+	  "Equipo",
+	  JOptionPane.QUESTION_MESSAGE,
+	  null,
+	  nombresEquipos,
+	  nombresEquipos[0]
+	  );
 
-    // Если имя или фамилия пустые
-    if (nombre == null || apellido == null || nombre.isBlank() || apellido.isBlank()) {
-      JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
-      return;
-    }
+	  if (seleccion == null) {
+	  JOptionPane.showMessageDialog(null, "No se seleccionó ningún equipo.");
+	  return;
+	  }
 
-    List<Equipo> equipos = club.getEquipos();
-    if (equipos.isEmpty()) {
-      JOptionPane.showMessageDialog(null, "Primero debe registrar al menos un equipo.");
-      return;
-    }
-    String[] nombresEquipos = new String[equipos.size()];
-    for (int i = 0; i < equipos.size(); i++) {
-      nombresEquipos[i] = equipos.get(i).getNombre();
-    }
+	  Equipo equipoSeleccionado = null;
+	  for (Equipo eq : equipos) {
+	  if (eq.getNombre().equals(seleccion)) {
+	  equipoSeleccionado = eq;
+	  break;
+	  }
+	  }
 
-    String seleccion = (String) JOptionPane.showInputDialog(
-        null,
-        "Seleccione el equipo al que desea asignar el Director Técnico:",
-        "Equipo",
-        JOptionPane.QUESTION_MESSAGE,
-        null,
-        nombresEquipos,
-        nombresEquipos[0]);
+	  DirectorTecnico dt = new DirectorTecnico(nombre, apellido, email, password);
+	  equipoSeleccionado.setDirectorTecnico(dt);
 
-    if (seleccion == null) {
-      JOptionPane.showMessageDialog(null, "No se seleccionó ningún equipo.");
-      return;
-    }
-
-    Equipo equipoSeleccionado = null;
-    for (Equipo eq : equipos) {
-      if (eq.getNombre().equals(seleccion)) {
-        equipoSeleccionado = eq;
-        break;
-      }
-    }
-
-    DirectorTecnico dt = new DirectorTecnico(nombre, apellido, email);
-    equipoSeleccionado.setDirectorTecnico(dt);
-
-    JOptionPane.showMessageDialog(null,
-        "Director Técnico asignado al equipo " + equipoSeleccionado.getNombre() + ":\n" +
-            dt.getNombre() + " " + dt.getApellido() + "\nEmail: " + dt.getEmail());
-  }
-
+	  JOptionPane.showMessageDialog(null,
+	  "Director Técnico asignado al equipo " + equipoSeleccionado.getNombre() + ":\n" +
+	  dt.getNombre() + " " + dt.getApellido() + "\nEmail: " + dt.getEmail());
+	  }
 }

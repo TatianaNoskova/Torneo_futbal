@@ -31,6 +31,9 @@ public class SistemaRegistro {
 
 	socioEmails = new ArrayList<>();
 	socioEmails.add("juan.socio@gmail.com");
+	Socio socio = new Socio ("Juan", "Socio", "juan.socio@gmail.com", "12");
+	
+	personasRegistradas.add(socio);
 	socioEmails.add("ana.socia@yahoo.com");
 	
 	arbitroEmails = new ArrayList<>();

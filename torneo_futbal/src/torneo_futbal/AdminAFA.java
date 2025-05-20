@@ -312,52 +312,30 @@ public class AdminAFA extends Administrador {
 	    }
 	    
 	    private void registrarArbitro() {
-	        // Логика регистрации арбитра
-	        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del árbitro:");
-	        String apellido = JOptionPane.showInputDialog("Ingrese el apellido del árbitro:");
-	        String email;
+	    	// Логика регистрации арбитра
+	    	String nombre = JOptionPane.showInputDialog("Ingrese el nombre del árbitro:");
+	    	String apellido = JOptionPane.showInputDialog("Ingrese el apellido del árbitro:");
+	    	String email = JOptionPane.showInputDialog("Ingrese el correo electrónico del árbitro:");
+	    	String password = JOptionPane.showInputDialog("Ingrese la contraseña del árbitro:");
 
-	        while (true) {
-	            email = JOptionPane.showInputDialog("Ingrese el correo electrónico del árbitro:");
+	    	if (nombre == null || apellido == null || email == null || nombre.isBlank() || apellido.isBlank() || email.isBlank()) {
+	    	JOptionPane.showMessageDialog(null, "Datos inválidos. Intenta nuevamente.");
+	    	return;
+	    	}
 
-	            
-	            if (email == null) {
-	                JOptionPane.showMessageDialog(null, "Registro cancelado por el usuario.");
-	                return;
-	            }
+	    	// Проверка, существует ли уже арбитр с таким email
+	    	for (Arbitro arbitro : arbitrosRegistrados) {
+	    	if (arbitro.getEmail().equals(email)) {
+	    	JOptionPane.showMessageDialog(null, "Este correo ya está registrado como árbitro.");
+	    	return;
+	    	}
+	    	}
 
-	            if (email.isBlank()) {
-	                JOptionPane.showMessageDialog(null, "Correo electrónico no puede estar vacío.");
-	                continue;
-	            }
-
-	            if (!email.contains("@")) {
-	                JOptionPane.showMessageDialog(null, "Correo electrónico inválido. Debe contener '@'.");
-	                continue;
-	            }
-
-	            // Проверка, существует ли уже арбитр с таким email
-	            boolean yaRegistrado = false;
-	            for (Arbitro arbitro : arbitrosRegistrados) {
-	                if (arbitro.getEmail().equals(email)) {
-	                    JOptionPane.showMessageDialog(null, "Este correo ya está registrado como árbitro.");
-	                    yaRegistrado = true;
-	                    break;
-	                }
-	            }
-
-	            if (yaRegistrado) {
-	                continue;
-	            }
-
-	            // Всё в порядке — создаём арбитра
-	            Arbitro nuevoArbitro = new Arbitro(nombre, apellido, email);
-	            arbitrosRegistrados.add(nuevoArbitro);
-	            JOptionPane.showMessageDialog(null, "¡Árbitro registrado exitosamente!");
-	            break; // Выход из while после успешной регистрации
-	        }
-	    }
-
+	    	// Создание нового арбитра и добавление его в систему
+	    	Arbitro nuevoArbitro = new Arbitro(nombre, apellido, email, password);
+	    	arbitrosRegistrados.add(nuevoArbitro);
+	    	JOptionPane.showMessageDialog(null, "¡Arbitro registrado exitosamente!");
+	    	}
 	    
 	 // Метод для сортировки матчей по категориям
 	    private void sortearPartidosPorCategoria() {
