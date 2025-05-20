@@ -171,6 +171,8 @@ public class DatosSimulados {
 	   	 partidoDePrueba.setFecha(LocalDate.of(2025, 6, 20));
 	   	 partidoDePrueba.setHora(LocalTime.of(18, 30));
 	   	 partidoDePrueba.setEstadio(estadioLocal);
+	   	 partidoDePrueba.setArbitro(arbitro1);
+
 
 	   	 // Agregar el partido al Torneo
 	   	 torneo1.agregarPartido(partidoDePrueba);
