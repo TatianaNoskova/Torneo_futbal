@@ -16,21 +16,18 @@ import java.time.format.DateTimeParseException;
 import javax.swing.JOptionPane;
 
 public class AdminAFA extends Administrador {
-	
+
 	private List<Arbitro> arbitrosRegistrados;
 	
-	public AdminAFA(String nombre, String apellido, String email) {
-        super(nombre, apellido, email, "Administrador AFA");
-        
-        this.arbitrosRegistrados = new ArrayList<>();
-        
-    }
-	
-	
+	public AdminAFA(String nombre, String apellido, String email, String password) {
+		super(nombre, apellido, email, password, "Administrador AFA");
+		this.arbitrosRegistrados = new ArrayList<>();
+	}
+
 	private SistemaTorneos sistemaTorneos = new SistemaTorneos();
 
 	public void setSistemaTorneos(SistemaTorneos sistemaTorneos) {
-	    this.sistemaTorneos = sistemaTorneos;
+		this.sistemaTorneos = sistemaTorneos;
 	}
 	
 	

@@ -7,8 +7,8 @@ public class DirectorTecnico extends Usuario {
 	protected String email;
     protected String rol;
 
-	public DirectorTecnico(String nombre, String apellido, String email) {
-		super(nombre, apellido, email, "Director Técnico");
+	public DirectorTecnico(String nombre, String apellido, String email, String password) {
+		super(nombre, apellido, email, password, "Director Técnico");
 		
 		this.email = email;
 	

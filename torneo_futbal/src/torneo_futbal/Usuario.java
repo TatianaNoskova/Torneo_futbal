@@ -11,8 +11,8 @@ public abstract class Usuario extends Persona {
 	protected String rol;
 	protected List<ReservaInstalacion> misReservas;
 
-	public Usuario(String nombre, String apellido, String email, String rol) {
-		super(nombre, apellido, email);
+	public Usuario(String nombre, String apellido, String email, String password, String rol) {
+		super(nombre, apellido, email, password);
 		this.rol = rol;
 		this.misReservas = new ArrayList<>();
 		ReservaInstalacion reserva1 = new ReservaInstalacion(this, LocalDateTime.now().plusDays(5),

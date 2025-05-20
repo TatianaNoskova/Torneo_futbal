@@ -7,14 +7,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 public class AdminClub extends Administrador {
-	
+
 	private Club club;
 
- 
-
-  public AdminClub(String nombre, String apellido, String email) {
-    super(nombre, apellido, email, "Administrador del Club");
-  }
+	public AdminClub(String nombre, String apellido, String email, String password) {
+		super(nombre, apellido, email, "Administrador del Club", password);
+	}
+	
+	public void setClub(Club club) {
+		this.club = club;
+	}
 
   @Override
   public void mostrarMenu() {

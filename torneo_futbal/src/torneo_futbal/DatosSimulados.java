@@ -6,14 +6,14 @@ public class DatosSimulados {
 
     public static void inicializar() {
         // Creamos Varios Usuarios simulados
-        Publico publico1 = new Publico("Juan", "Perez", "juan.perez@gmail.com");
-        Publico publico2 = new Publico("Ana", "Perez", "ana.perez@gmail.com");
-        Publico publico3 = new Publico("Carlos", "Perez", "carlos.perez@gmail.com");
-        Socio socio1 = new Socio("Luis", "Perez", "luis.perez@gmail.com");
-        Socio socio2 = new Socio("Maria", "Perez", "maria.perez@gmail.com");
-        Socio socio3 = new Socio("Pedro", "Perez", "pedro.perez@gmail.com");
-        Arbitro arbitro1 = new Arbitro("Juan", "Perez", "juan.perez@gmail.com");
-        Arbitro arbitro2 = new Arbitro("Ana", "Perez", "ana.perez@gmail.com");
+        Publico publico1 = new Publico("Juan", "Perez", "juan.perez@gmail.com", "12");
+        Publico publico2 = new Publico("Ana", "Perez", "ana.perez@gmail.com", "12");
+        Publico publico3 = new Publico("Carlos", "Perez", "carlos.perez@gmail.com", "12");
+        Socio socio1 = new Socio("Luis", "Perez", "luis.perez@gmail.com", "12");
+        Socio socio2 = new Socio("Maria", "Perez", "maria.perez@gmail.com", "12");
+        Socio socio3 = new Socio("Pedro", "Perez", "pedro.perez@gmail.com", "12");
+        Arbitro arbitro1 = new Arbitro("Juan", "Perez", "juan.perez@gmail.com", "12");
+        Arbitro arbitro2 = new Arbitro("Ana", "Perez", "ana.perez@gmail.com", "12");
 
         // Creamos varios clubes simulados de argentina
         Club club1 = new Club("Club A", "Santa Fe");

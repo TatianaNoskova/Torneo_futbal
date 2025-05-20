@@ -7,8 +7,8 @@ public class Arbitro extends Usuario {
 	protected String email;
     protected String rol;
 
-    public Arbitro (String nombre, String apellido, String email) {
-        super(nombre, apellido, email, "Árbitro" );
+    public Arbitro (String nombre, String apellido, String email, String password) {
+        super(nombre, apellido, email, password, "Árbitro" );
         this.email = email;
        
     }
