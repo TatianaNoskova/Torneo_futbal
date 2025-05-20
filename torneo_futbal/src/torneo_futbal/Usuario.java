@@ -85,31 +85,31 @@ public abstract class Usuario extends Persona {
 		boolean volver = false;
 
 		while (!volver) {
-		String seleccion = (String) JOptionPane.showInputDialog(
-		null,
-		"Submenú - Gestión de los Clubes y Diciplinas",
-		"Opciones",
-		JOptionPane.QUESTION_MESSAGE,
-		null,
-		opciones,
-		opciones[0]
-		);
+			String seleccion = (String) JOptionPane.showInputDialog(
+					null,
+					"Submenú - Gestión de los Clubes y Diciplinas",
+					"Opciones",
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					opciones,
+					opciones[0]
+					);
 
-		if (seleccion == null || seleccion.equals("Volver")) {
-		volver = true;
-		} else {
-		switch (seleccion) {
-		case "Búsqueda por nombre de Club" -> {realizarBusqueda("Club");}
-		case "Búsqueda por nombre de Disciplina" -> {realizarBusqueda("Disciplina");}
-		case "Consultar fechas y horarios disponibles", 
-		"Reservar / modificar / cancelar reserva" -> 
-		JOptionPane.showMessageDialog(null,
-		"Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
-		default -> JOptionPane.showMessageDialog(null, "Opción no válida.");
+			if (seleccion == null || seleccion.equals("Volver")) {
+				volver = true;
+			} else {
+				switch (seleccion) {
+				case "Búsqueda por nombre de Club" -> {realizarBusqueda("Club");}
+				case "Búsqueda por nombre de Disciplina" -> {realizarBusqueda("Disciplina");}
+				case "Consultar fechas y horarios disponibles", 
+				"Reservar / modificar / cancelar reserva" -> 
+				JOptionPane.showMessageDialog(null,
+						"Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
+				default -> JOptionPane.showMessageDialog(null, "Opción no válida.");
+				}
+			}
 		}
-		}
-		}
-		}
+	}
 
 	private void mostrarSubmenuCompraEntradas() {
 		String[] opciones = {
@@ -171,56 +171,56 @@ public abstract class Usuario extends Persona {
 	
 	public List<Disciplina> buscarDisciplinasPorNombreClub(String nombreClub) {
 		for (Club club : SistemaRegistro.clubesRegistrados) {
-		if (club.getNombre().equalsIgnoreCase(nombreClub)) {
-		return club.getDisciplinas();
+			if (club.getNombre().equalsIgnoreCase(nombreClub)) {
+				return club.getDisciplinas();
 		}
+	}
+		return new ArrayList<>();
 		}
-		return new ArrayList<>(); // если клуб не найден
-		}
-		public List<Club> buscarClubesPorNombreDisciplina(String nombreDisciplina) {
+	public List<Club> buscarClubesPorNombreDisciplina(String nombreDisciplina) {
 		List<Club> clubesConDisciplina = new ArrayList<>();
-		for (Club club : SistemaRegistro.clubesRegistrados) {
-		for (Disciplina disciplina : club.getDisciplinas()) {
-		if (disciplina.getNombreDisciplina().equalsIgnoreCase(nombreDisciplina)) {
-		clubesConDisciplina.add(club);
-		break; // Как только нашли клуб, можно остановиться
+			for (Club club : SistemaRegistro.clubesRegistrados) {
+				for (Disciplina disciplina : club.getDisciplinas()) {
+					if (disciplina.getNombreDisciplina().equalsIgnoreCase(nombreDisciplina)) {
+						clubesConDisciplina.add(club);
+						break; 
+					}
+				}
 		}
-		}
-		}
-		return clubesConDisciplina;
-		}
+			return clubesConDisciplina;
+	}
 
-		public void realizarBusqueda(String tipoBusqueda) {
+	public void realizarBusqueda(String tipoBusqueda) {
 		String input = JOptionPane.showInputDialog("Ingrese el nombre del " + (tipoBusqueda.equals("Club") ? "Club" : "Disciplina") + ":");
 
-		if (input != null && !input.isEmpty()) {
-		if (tipoBusqueda.equals("Club")) {
-		// Поиск дисциплин по названию клуба
-		List<Disciplina> disciplinas = buscarDisciplinasPorNombreClub(input);
-		if (disciplinas.isEmpty()) {
-		JOptionPane.showMessageDialog(null, "No se encontraron disciplinas para el club: " + input);
-		} else {
-		StringBuilder disciplinasInfo = new StringBuilder("Disciplinas del club " + input + ":\n");
-		for (Disciplina disciplina : disciplinas) {
-		disciplinasInfo.append(disciplina.getNombreDisciplina()).append("\n");
-		}
-		JOptionPane.showMessageDialog(null, disciplinasInfo.toString());
-		}
-		} else if (tipoBusqueda.equals("Disciplina")) {
-		// Поиск клубов по названию дисциплины
-		List<Club> clubes = buscarClubesPorNombreDisciplina(input);
-		if (clubes.isEmpty()) {
-		JOptionPane.showMessageDialog(null, "No se encontraron clubes con la disciplina: " + input);
-		} else {
-		StringBuilder clubesInfo = new StringBuilder("Clubes con la disciplina " + input + ":\n");
-		for (Club club : clubes) {
-		clubesInfo.append(club.getNombre()).append("\n");
-		}
-		JOptionPane.showMessageDialog(null, clubesInfo.toString());
-		}
-		}
-		} else {
-		JOptionPane.showMessageDialog(null, "Por favor, ingrese un nombre válido.");
+			if (input != null && !input.isEmpty()) {
+				if (tipoBusqueda.equals("Club")) {
+		// Busqueda por nombre de Club
+					List<Disciplina> disciplinas = buscarDisciplinasPorNombreClub(input);
+					if (disciplinas.isEmpty()) {
+						JOptionPane.showMessageDialog(null, "No se encontraron disciplinas para el club: " + input);
+					} else {
+						StringBuilder disciplinasInfo = new StringBuilder("Disciplinas del club " + input + ":\n");
+						for (Disciplina disciplina : disciplinas) {
+							disciplinasInfo.append(disciplina.getNombreDisciplina()).append("\n");
+						}
+						JOptionPane.showMessageDialog(null, disciplinasInfo.toString());
+					}
+				} else if (tipoBusqueda.equals("Disciplina")) {
+		// Busqueda por nombre de Diciplina
+					List<Club> clubes = buscarClubesPorNombreDisciplina(input);
+					if (clubes.isEmpty()) {
+						JOptionPane.showMessageDialog(null, "No se encontraron clubes con la disciplina: " + input);
+					} else {
+						StringBuilder clubesInfo = new StringBuilder("Clubes con la disciplina " + input + ":\n");
+						for (Club club : clubes) {
+							clubesInfo.append(club.getNombre()).append("\n");
+						}
+						JOptionPane.showMessageDialog(null, clubesInfo.toString());
+					}
+				}
+			} else {
+				JOptionPane.showMessageDialog(null, "Por favor, ingrese un nombre válido.");
 		}
 	}
 
