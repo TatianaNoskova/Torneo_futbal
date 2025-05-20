@@ -8,7 +8,8 @@ public class Club {
         this.nombre = nombre;
       
     }
-
+    
+    
     public String getNombre() {
         return nombre;
     }

@@ -1,7 +1,5 @@
 package torneo_futbal;
 
-<<<<<<< Updated upstream
-=======
 import java.awt.Image;
 import java.io.File;
 import java.util.ArrayList;
@@ -10,15 +8,10 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
->>>>>>> Stashed changes
 import javax.swing.JOptionPane;
 
 public class AdminClub extends Administrador {
 
-<<<<<<< Updated upstream
-    public AdminClub(String nombre, String apellido, String email) {
-        super(nombre, apellido, email, "Administrador del Club");
-=======
 	private Club club;
 
 	public AdminClub(String nombre, String apellido, String email, String password) {
@@ -72,7 +65,6 @@ public class AdminClub extends Administrador {
       case "Registrar equipo" -> registrarEquipo();
       case "Registrar disciplina y instalacion deportiva" -> registrarDisciplinaYInstalacion();
       case "Registrar director técnico" -> registrarDirectorTecnico();
-      case "Vender entradas" -> venderEntradas();
 
       // Otros opciones van a ser agregadas despues
 
@@ -85,47 +77,15 @@ public class AdminClub extends Administrador {
     if (club != null) {
       JOptionPane.showMessageDialog(null, "Ya tienes un club registrado:\n" + club);
       return;
->>>>>>> Stashed changes
     }
 
-    @Override
-    public void mostrarMenu() {
-        boolean salir = false;
+    String nombre = JOptionPane.showInputDialog("Ingrese el nombre del club:");
+    String direccion = JOptionPane.showInputDialog("Ingrese la dirección del club:");
 
-        while (!salir) {
-            String[] opciones = {
-                    "Registrar club",
-                    "Registrar estadio",
-                    "Registrar equipo",
-                    "Registrar director técnico",
-                    "Gestionar disciplinas y actividades",
-                    "Reservar/administrar instalaciones",
-                    "Agregar categorías de entradas",
-                    "Vender entradas",
-                    "Administrar beneficios y premios",
-                    "Salir"
-            };
-
-            String seleccion = (String) JOptionPane.showInputDialog(
-                    null,
-                    "Menú Administrador de Club",
-                    "Opciones",
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    opciones,
-                    opciones[0]
-            );
-
-            if (seleccion == null || seleccion.equals("Salir")) {
-                salir = true;
-            } else {
-                JOptionPane.showMessageDialog(null,
-                        "Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
-            }
-        }
+    if (nombre == null || direccion == null || nombre.isBlank() || direccion.isBlank()) {
+      JOptionPane.showMessageDialog(null, "Datos inválidos. Por favor, intenta nuevamente");
+      return;
     }
-<<<<<<< Updated upstream
-=======
 
     club = new Club(nombre, direccion);
 
@@ -510,5 +470,4 @@ public class AdminClub extends Administrador {
 	  return partidosDisponibles;
 	  }
 	  
->>>>>>> Stashed changes
 }
