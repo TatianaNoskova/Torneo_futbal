@@ -2,7 +2,11 @@ package torneo_futbal;
 
 import java.awt.Image;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -61,6 +65,7 @@ public class AdminClub extends Administrador {
       case "Registrar equipo" -> registrarEquipo();
       case "Registrar disciplina y instalacion deportiva" -> registrarDisciplinaYInstalacion();
       case "Registrar director técnico" -> registrarDirectorTecnico();
+      case "Vender entradas" -> venderEntradas();
 
       // Otros opciones van a ser agregadas despues
 
@@ -85,7 +90,7 @@ public class AdminClub extends Administrador {
 
     club = new Club(nombre, direccion);
 
-    // ВАЖНО: добавляем в список зарегистрированных клубов
+    // Agregamos a la lista de los clubes
     SistemaRegistro.clubesRegistrados.add(club);
 
     JOptionPane.showMessageDialog(null, "Club registrado exitosamente:\n" + club);
@@ -318,4 +323,154 @@ public class AdminClub extends Administrador {
 	  "Director Técnico asignado al equipo " + equipoSeleccionado.getNombre() + ":\n" +
 	  dt.getNombre() + " " + dt.getApellido() + "\nEmail: " + dt.getEmail());
 	  }
+  
+  private void venderEntradas() {
+	  if (club == null) {
+	  JOptionPane.showMessageDialog(null, "Primero debe registrar un club.");
+	  return;
+	  }
+
+	  List<Partido> partidos = obtenerPartidosDisponibles();
+	  if (partidos.isEmpty()) {
+	  JOptionPane.showMessageDialog(null, "No hay partidos disponibles.");
+	  return;
+	  }
+
+	  String[] nombresPartidos = new String[partidos.size()];
+	  for (int i = 0; i < partidos.size(); i++) {
+	  nombresPartidos[i] = partidos.get(i).toString();
+	  }
+
+	  String partidoSeleccionado = (String) JOptionPane.showInputDialog(
+	  null,
+	  "Seleccione el partido:",
+	  "Partido",
+	  JOptionPane.QUESTION_MESSAGE,
+	  null,
+	  nombresPartidos,
+	  nombresPartidos[0]
+	  );
+
+	  if (partidoSeleccionado == null) return;
+
+	  Partido partido = null;
+	  for (Partido p : partidos) {
+	  if (p.toString().equals(partidoSeleccionado)) {
+	  partido = p;
+	  break;
+	  }
+	  }
+
+	  if (partido == null) {
+	  JOptionPane.showMessageDialog(null, "Partido no válido.");
+	  return;
+	  }
+
+	  int capacidadEstadio = partido.getEstadio().getCapacidad();
+	  int entradasRestantes = capacidadEstadio;
+
+	  Set<String> categoriasProcesadas = new HashSet<>();
+	  String[] categorias = {"VIP", "General", "Economía"};
+
+	  while (categoriasProcesadas.size() < categorias.length && entradasRestantes > 0) {
+	  List<String> restantes = new ArrayList<>();
+	  for (String cat : categorias) {
+	  if (!categoriasProcesadas.contains(cat)) {
+	  restantes.add(cat);
+	  }
+	  }
+
+	  String categoriaSeleccionada = (String) JOptionPane.showInputDialog(
+	  null,
+	  "Seleccione la categoría de la entrada (faltan " + restantes.size() + "):\n" +
+	  "Entradas restantes disponibles: " + entradasRestantes,
+	  "Categoría",
+	  JOptionPane.QUESTION_MESSAGE,
+	  null,
+	  restantes.toArray(),
+	  restantes.get(0)
+	  );
+
+	  if (categoriaSeleccionada == null) return;
+
+
+	  String precioStr = JOptionPane.showInputDialog(
+	  "Ingrese el precio de la entrada para la categoría " + categoriaSeleccionada + ":");
+	  if (precioStr == null) continue;
+
+	  double precio;
+	  try {
+	  precio = Double.parseDouble(precioStr);
+	  if (precio <= 0) throw new NumberFormatException();
+	  } catch (NumberFormatException e) {
+	  JOptionPane.showMessageDialog(null, "Debe ingresar un precio válido y mayor que cero.");
+	  continue;
+	  }
+
+
+	  String cantidadStr = JOptionPane.showInputDialog(
+	  "Ingrese la cantidad de entradas a vender para categoría " + categoriaSeleccionada + ":\n" +
+	  "Máximo disponible: " + entradasRestantes);
+	  if (cantidadStr == null) continue;
+
+	  int cantidad;
+	  try {
+	  cantidad = Integer.parseInt(cantidadStr);
+	  if (cantidad <= 0) throw new NumberFormatException();
+	  } catch (NumberFormatException e) {
+	  JOptionPane.showMessageDialog(null, "La cantidad debe ser un número mayor que cero.");
+	  continue;
+	  }
+
+	  if (cantidad > entradasRestantes) {
+	  JOptionPane.showMessageDialog(null,
+	  "No hay suficientes entradas disponibles. Puedes vender hasta " + entradasRestantes + ".");
+	  continue;
+	  }
+
+
+	  for (int i = 0; i < cantidad; i++) {
+	  int contador = 0;
+	  Entrada entrada = new Entrada(partido, categoriaSeleccionada, precio, contador++, false, club);
+	  }
+
+	  entradasRestantes -= cantidad;
+	  categoriasProcesadas.add(categoriaSeleccionada);
+
+	  JOptionPane.showMessageDialog(null,
+	  cantidad + " entradas de categoría " + categoriaSeleccionada +
+	  " vendidas.\nEntradas restantes para otras categorías: " + entradasRestantes);
+	  }
+
+	  if (entradasRestantes == 0) {
+	  JOptionPane.showMessageDialog(null, "¡Se ha alcanzado la capacidad máxima del estadio!");
+	  } else {
+	  JOptionPane.showMessageDialog(null, "¡Venta completada para todas las categorías!");
+	  }
+	  }
+
+
+
+	  private List<Partido> obtenerPartidosDisponibles() {
+	  List<Partido> partidosDisponibles = new ArrayList<>();
+
+
+	  for (Torneo torneo : SistemaRegistro.torneosRegistrados) {
+	  for (Partido partido : torneo.getPartidosPorCategoria("Primera")) { // Или все категории?
+	  if (partido.getEstadio() != null) {
+	  for (Estadio e : club.getEstadios()) {
+	  if (e.getNombre().equals(partido.getEstadio().getNombre())) {
+	  partidosDisponibles.add(partido);
+	  break;
+	  }
+	  }
+	  }
+	  }
+	  }
+
+	  return partidosDisponibles;
+	  }
+	  
+
+	  
 }
