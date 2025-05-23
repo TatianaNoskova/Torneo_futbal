@@ -27,7 +27,7 @@ public abstract class Usuario extends Persona {
 
 	public List<ReservaInstalacion> getMisReservas() {
 
-		return new ArrayList<>(misReservas);
+		return this.misReservas;
 	}
 
 	public void agregarReserva(ReservaInstalacion reserva) {
@@ -281,14 +281,13 @@ public abstract class Usuario extends Persona {
 
 	private void mostrarMisReservas() {
 		// Verificar si hay reservas
-		List<ReservaInstalacion> misReservas = getMisReservas();
-		if (misReservas.isEmpty()) {
+		if (this.misReservas.isEmpty()) {
 			JOptionPane.showMessageDialog(null, "No tienes reservas.");
 			return;
 		}
 
 		StringBuilder resultado = new StringBuilder("Mis reservas:\n");
-		for (ReservaInstalacion reserva : misReservas) {
+		for (ReservaInstalacion reserva :this.misReservas) {
 			resultado.append(reserva.getUsuario().getNombre())
 					.append(" (Fecha de inicio: " + reserva.getFechaReservaInicio() + ")\n")
 					.append("Fecha de fin: " + reserva.getFechaReservaFin() + "\n");
@@ -427,15 +426,14 @@ public abstract class Usuario extends Persona {
 	}
 
 	private void cancelarReserva() {
-		List<ReservaInstalacion> misReservas = getMisReservas();
-		if (misReservas.isEmpty()) {
+		if (this.misReservas.isEmpty()) {
 			JOptionPane.showMessageDialog(null, "No tienes reservas.");
 			return;
 		}
 
-		String[] reservas = new String[misReservas.size()];
-		for (int i = 0; i < misReservas.size(); i++) {
-			ReservaInstalacion reserva = misReservas.get(i);
+		String[] reservas = new String[this.misReservas.size()];
+		for (int i = 0; i < this.misReservas.size(); i++) {
+			ReservaInstalacion reserva = this.misReservas.get(i);
 			reservas[i] = "id: " + reserva.getIdReserva() + " | " +
 					"Fecha Inicio: " + reserva.getFechaReservaInicio() + " | " +
 					"Fecha Fin: " + reserva.getFechaReservaFin();
@@ -462,9 +460,9 @@ public abstract class Usuario extends Persona {
 
 		// buscar reserva seleccionada
 		ReservaInstalacion reservaSeleccionada = null;
-		for (int i = 0; i < misReservas.size(); i++) {
-			if (misReservas.get(i).getIdReserva().equals(idReserva)) {
-				reservaSeleccionada = misReservas.get(i);
+		for (int i = 0; i < this.misReservas.size(); i++) {
+			if (this.misReservas.get(i).getIdReserva().equals(idReserva)) {
+				reservaSeleccionada = this.misReservas.get(i);
 				index = i;
 				break;
 			}
@@ -480,9 +478,8 @@ public abstract class Usuario extends Persona {
 			return;
 		}
 		// eliminar reserva
-		System.out.println(index);
-		System.out.println(misReservas.get(index));
-		misReservas.remove(index);
+		
+		this.misReservas.remove(index);
 		// registrar motivo cancelacion
 		String motivoCancelacion = JOptionPane.showInputDialog(null,
 				"Motivo de cancelación:");
