@@ -164,8 +164,8 @@ public abstract class Usuario extends Persona {
 			case "Ver disponibilidad" -> verInstalacionesDisponibles(clubesRegistrados);
 			case "Ver reservas" -> mostrarMisReservas();
 			case "Solicitar nueva reserva" -> realizarNuevaReserva();
-			case "Cancelar reserva" -> JOptionPane.showMessageDialog(null,
-					"Has seleccionado: " + seleccion + "\n(Función aún no implementada)"); // cancelarMiReserva();
+			case "Cancelar reserva" -> cancelarReserva();
+
 			default -> JOptionPane.showMessageDialog(null, "Opción no válida.");
 		}
 	}
@@ -376,29 +376,29 @@ public abstract class Usuario extends Persona {
 
 		// Seleccionar fecha de inicio
 		String fechaInicio = JOptionPane.showInputDialog(null,
-		"Ingrese la fecha de inicio(aaaa-mm-dd):",
-		"Fecha de inicio",
-		JOptionPane.QUESTION_MESSAGE);
+				"Ingrese la fecha de inicio(aaaa-mm-dd):",
+				"Fecha de inicio",
+				JOptionPane.QUESTION_MESSAGE);
 
 		// Verificar fecha de inicio
 		if (fechaInicio == null || fechaInicio.isBlank()) {
 			JOptionPane.showMessageDialog(null, "Debe ingresar una fecha.");
 			return;
 		}
-		//Seleccionar hora de inicio
+		// Seleccionar hora de inicio
 		String horaInicio = JOptionPane.showInputDialog(null,
-		"Ingrese la hora de inicio(hh:mm):",
-		"Hora de inicio",
-		JOptionPane.QUESTION_MESSAGE);
-		
+				"Ingrese la hora de inicio(hh:mm):",
+				"Hora de inicio",
+				JOptionPane.QUESTION_MESSAGE);
+
 		// Verificar hora de inicio
 		if (horaInicio == null || horaInicio.isBlank()) {
 			JOptionPane.showMessageDialog(null, "Debe ingresar una hora.");
 			return;
 		}
-				
-		LocalDateTime fechaHoraInicio = LocalDateTime.parse(fechaInicio + " - " + horaInicio
-		+ ":00");
+
+		LocalDateTime fechaHoraInicio = LocalDateTime.parse(fechaInicio + "T" + horaInicio
+				+ ":00");
 		// ingresar duracion de la reserva en horas
 		String duracionReserva = JOptionPane.showInputDialog("Ingrese la duracion de la reserva en horas:");
 		if (duracionReserva == null || duracionReserva.isBlank()) {
@@ -424,5 +424,74 @@ public abstract class Usuario extends Persona {
 				"\nFecha Inicio: " + fechaHoraInicio +
 				"\nFecha Fin: " + fechaHoraFin);
 
+	}
+
+	private void cancelarReserva() {
+		List<ReservaInstalacion> misReservas = getMisReservas();
+		if (misReservas.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "No tienes reservas.");
+			return;
+		}
+
+		String[] reservas = new String[misReservas.size()];
+		for (int i = 0; i < misReservas.size(); i++) {
+			ReservaInstalacion reserva = misReservas.get(i);
+			reservas[i] = "id: " + reserva.getIdReserva() + " | " +
+					"Fecha Inicio: " + reserva.getFechaReservaInicio() + " | " +
+					"Fecha Fin: " + reserva.getFechaReservaFin();
+		}
+		String seleccion = (String) JOptionPane.showInputDialog(
+				null,
+				"Seleccione la reserva a cancelar:",
+				"Reserva",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				reservas,
+				reservas[0]);
+
+		if (seleccion == null) {
+			return;
+		}
+		System.out.println(seleccion);
+		System.out.println(seleccion.split(" \\| ")[0].substring(4));
+
+		// verificar si hay reservas
+		// extraer el id de la reserva seleccionda
+		String idReserva = seleccion.split(" \\| ")[0].substring(4);
+		int index = 0;
+
+		// buscar reserva seleccionada
+		ReservaInstalacion reservaSeleccionada = null;
+		for (int i = 0; i < misReservas.size(); i++) {
+			if (misReservas.get(i).getIdReserva().equals(idReserva)) {
+				reservaSeleccionada = misReservas.get(i);
+				index = i;
+				break;
+			}
+		}
+
+		// verificar reserva seleccionada
+		if (reservaSeleccionada == null)
+
+		{
+			// no se encontro la reserva
+
+			JOptionPane.showMessageDialog(null, "No se encontro la reserva seleccionada.");
+			return;
+		}
+		// eliminar reserva
+		System.out.println(index);
+		System.out.println(misReservas.get(index));
+		misReservas.remove(index);
+		// registrar motivo cancelacion
+		String motivoCancelacion = JOptionPane.showInputDialog(null,
+				"Motivo de cancelación:");
+
+		if (motivoCancelacion == null || motivoCancelacion.isBlank()) {
+			JOptionPane.showMessageDialog(null, "Debe ingresar un motivo.");
+			return;
+		}
+		reservaSeleccionada.setMotivo(motivoCancelacion);
+		JOptionPane.showMessageDialog(null, "Reserva cancelada." + "id: " + reservaSeleccionada.getIdReserva());
 	}
 }
