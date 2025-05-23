@@ -14,174 +14,187 @@ public class SistemaRegistro {
 	private List<String> dtEmails;
 	private List<String> clubes;
 	private SistemaTorneos sistemaTorneos;
+
 	public SistemaRegistro() {
-	
-	personasRegistradas = new ArrayList<>();
-	sistemaTorneos = new SistemaTorneos();
 
-	// "BASE DE DATOS"
-	adminAFAEmails = new ArrayList<>();
-	adminAFAEmails.add("admin@afa.com");
-	
-	// Agregamos el usuario para simular BD:
-	AdminAFA admin = new AdminAFA("Afa", "Admin", "admin@afa.com", "12");
-	personasRegistradas.add(admin);
-	adminClubEmails = new ArrayList<>();
-	adminClubEmails.add("clubadmin1@club.com");
+		personasRegistradas = new ArrayList<>();
+		sistemaTorneos = new SistemaTorneos();
 
-	socioEmails = new ArrayList<>();
-	socioEmails.add("juan.socio@gmail.com");
-	Socio socio = new Socio ("Juan", "Socio", "juan.socio@gmail.com", "12");
-	
-	personasRegistradas.add(socio);
-	socioEmails.add("ana.socia@yahoo.com");
-	
-	arbitroEmails = new ArrayList<>();
-	arbitroEmails.add("arbitro1@futbol.com");
-	
-	dtEmails = new ArrayList<>();
-	dtEmails.add("director.tecnico1@futbol.com");
+		// "BASE DE DATOS"
+		adminAFAEmails = new ArrayList<>();
+		adminAFAEmails.add("admin@afa.com");
+
+		// Agregamos el usuario para simular BD:
+		AdminAFA admin = new AdminAFA("Afa", "Admin", "admin@afa.com", "12");
+		personasRegistradas.add(admin);
+		adminClubEmails = new ArrayList<>();
+		adminClubEmails.add("clubadmin1@club.com");
+
+		socioEmails = new ArrayList<>();
+		socioEmails.add("juan.socio@gmail.com");
+		Socio socio = new Socio("Juan", "Socio", "juan.socio@gmail.com", "12");
+
+		personasRegistradas.add(socio);
+		socioEmails.add("ana.socia@yahoo.com");
+
+		arbitroEmails = new ArrayList<>();
+		arbitroEmails.add("arbitro1@futbol.com");
+
+		dtEmails = new ArrayList<>();
+		dtEmails.add("director.tecnico1@futbol.com");
 	}
-	
+
 	public static List<Club> clubesRegistrados = new ArrayList<>();
 	public static List<Torneo> torneosRegistrados = new ArrayList<>();
-	
+
 	public void iniciarRegistro() {
-		String[] opciones = {"Registrarse", "Iniciar sesión"};
+		String[] opciones = { "Registrarse", "Iniciar sesión" };
 		String seleccion = (String) JOptionPane.showInputDialog(null,
 				"¿Qué deseas hacer?",
 				"Bienvenido",
 				JOptionPane.QUESTION_MESSAGE,
 				null,
 				opciones,
-				opciones[0]
-				);
+				opciones[0]);
 
-				if (seleccion == null) {
-					JOptionPane.showMessageDialog(null, "Operación cancelada.");
-					return;
-				}
+		if (seleccion == null) {
+			JOptionPane.showMessageDialog(null, "Operación cancelada.");
+			return;
+		}
 
-				if (seleccion.equals("Registrarse")) {
-					registrarNuevoUsuario();
-					} else {
-						iniciarSesion();
-					}
+		if (seleccion.equals("Registrarse")) {
+			registrarNuevoUsuario();
+		} else {
+			iniciarSesion();
+		}
 	}
 
 	private void registrarNuevoUsuario() {
-		String email = JOptionPane.showInputDialog("Ingrese su correo electrónico:");
+		String email;
+		String password;
+
+		while (true) {
+			email = JOptionPane.showInputDialog("Ingrese su correo electrónico:");
 			if (email == null || email.isBlank() || !email.contains("@")) {
-			JOptionPane.showMessageDialog(null, "Correo inválido.");
-				return;
+				JOptionPane.showMessageDialog(null, "Correo inválido.");
+				continue;
 			}
 
 			if (emailExiste(email)) {
 				JOptionPane.showMessageDialog(null, "Este correo ya está registrado.");
-				return;
+				continue;
 			}
-
-			String password = JOptionPane.showInputDialog("Cree una contraseña:");
+			break;
+		}
+		while (true) {
+			password = JOptionPane.showInputDialog("Cree una contraseña:");
 			if (password == null || password.isBlank()) {
 				JOptionPane.showMessageDialog(null, "Debe ingresar una contraseña.");
-				return;
+				continue;
 			}
+			break;
+		}
 
-			String nombre = JOptionPane.showInputDialog("Ingrese su nombre:");
-			String apellido = JOptionPane.showInputDialog("Ingrese su apellido:");
+		String nombre;
+		String apellido;
 
-			String[] roles = {"Administrador AFA", "Administrador de club", "Socio del club", "Público general"};
-			String rol = (String) JOptionPane.showInputDialog(
-					null,
-					"Seleccione su rol:",
-					"Registro",
-					JOptionPane.QUESTION_MESSAGE,
-					null,
-					roles,
-					roles[0]
-					);
+		while (true) {
 
-					if (rol == null) {
-						JOptionPane.showMessageDialog(null, "No se seleccionó ningún rol.");
-						return;
+			nombre = JOptionPane.showInputDialog("Ingrese su nombre:");
+			apellido = JOptionPane.showInputDialog("Ingrese su apellido:");
+			if (nombre == null || nombre.isBlank() || apellido == null || apellido.isBlank()) {
+				JOptionPane.showMessageDialog(null, "Debe ingresar un nombre y un apellido.");
+				continue;
+			}
+			break;
+		}
+		String[] roles = { "Administrador AFA", "Administrador de club", "Socio del club", "Público general" };
+		String rol = (String) JOptionPane.showInputDialog(
+				null,
+				"Seleccione su rol:",
+				"Registro",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				roles,
+				roles[0]);
+
+		if (rol == null) {
+			JOptionPane.showMessageDialog(null, "No se seleccionó ningún rol.");
+			return;
+		}
+
+		// Verificación de los roles
+		if ((rol.equals("Administrador AFA") && !adminAFAEmails.contains(email)) ||
+				(rol.equals("Administrador de club") && !adminClubEmails.contains(email)) ||
+				(rol.equals("Socio del club") && !socioEmails.contains(email))) {
+			JOptionPane.showMessageDialog(null, "Este correo no está autorizado para ese rol.");
+			return;
+		}
+
+		Persona persona;
+		switch (rol) {
+			case "Administrador AFA" -> persona = new AdminAFA(nombre, apellido, email, password);
+			case "Administrador de club" -> {
+				// Eliminar después de la connexión a la BD
+				AdminClub adminClub = new AdminClub(nombre, apellido, email, password);
+				for (Club c : clubesRegistrados) {
+					if (c.getNombre().equals("Club A")) {
+						adminClub.setClub(c);
+						break;
 					}
+				}
+				persona = adminClub;
+			}
+			case "Socio del club" -> persona = new Socio(nombre, apellido, email, password);
+			default -> persona = new Publico(nombre, apellido, email, password);
+		}
 
-	// Verificación de los roles
-					if ((rol.equals("Administrador AFA") && !adminAFAEmails.contains(email)) ||
-							(rol.equals("Administrador de club") && !adminClubEmails.contains(email)) ||
-							(rol.equals("Socio del club") && !socioEmails.contains(email))) {
-						JOptionPane.showMessageDialog(null, "Este correo no está autorizado para ese rol.");
-						return;
-					}
+		// Guardamos la contraseña
+		if (persona instanceof Usuario usuario) {
+			usuario.setPassword(password);
+		}
 
-					Persona persona;
-					switch (rol) {
-					case "Administrador AFA" -> persona = new AdminAFA(nombre, apellido, email, password);
-					case "Administrador de club" -> {
-						// Eliminar después de la connexión a la BD
-						AdminClub adminClub = new AdminClub(nombre, apellido, email, password);
-						for (Club c : clubesRegistrados) {
-							if (c.getNombre().equals("Club A")) {
-							adminClub.setClub(c);
-							break;
-							}
-						}
-						persona = adminClub;
-					}
-					case "Socio del club" -> persona = new Socio(nombre, apellido, email, password);
-					default -> persona = new Publico(nombre, apellido, email, password);
-						}
-
-						// Guardamos la contraseña
-					if (persona instanceof Usuario usuario) {
-						usuario.setPassword(password);
-					}
-
-					personasRegistradas.add(persona);
-					JOptionPane.showMessageDialog(null, "¡Registro exitoso como " + rol + "!");
-					persona.mostrarMenu();
+		personasRegistradas.add(persona);
+		JOptionPane.showMessageDialog(null, "¡Registro exitoso como " + rol + "!");
+		persona.mostrarMenu();
 	}
 
 	private void iniciarSesion() {
 		String email = JOptionPane.showInputDialog("Ingrese su correo electrónico:");
-			if (email == null || email.isBlank()) {
-				JOptionPane.showMessageDialog(null, "Debe ingresar un correo.");
-				return;
-			}
+		if (email == null || email.isBlank()) {
+			JOptionPane.showMessageDialog(null, "Debe ingresar un correo.");
+			return;
+		}
 
-			String password = JOptionPane.showInputDialog("Ingrese su contraseña:");
-			if (password == null || password.isBlank()) {
-				JOptionPane.showMessageDialog(null, "Debe ingresar una contraseña.");
-				return;
-			}
+		String password = JOptionPane.showInputDialog("Ingrese su contraseña:");
+		if (password == null || password.isBlank()) {
+			JOptionPane.showMessageDialog(null, "Debe ingresar una contraseña.");
+			return;
+		}
 
-			// Busqueda por todos los tipos de usuarios
-			for (Persona persona : personasRegistradas) {
+		// Busqueda por todos los tipos de usuarios
+		for (Persona persona : personasRegistradas) {
 			// Verificamos email и password
 			if (persona.getEmail().equalsIgnoreCase(email) && persona.getPassword().equals(password)) {
 				JOptionPane.showMessageDialog(null, "¡Inicio de sesión exitoso como " + obtenerRol(persona) + "!");
-					persona.mostrarMenu(); 
-					return;
-				}
+				persona.mostrarMenu();
+				return;
 			}
-
-			// si no se encuentra el usuario o el email o contraseña no coinciden
-				JOptionPane.showMessageDialog(null, "Correo o contraseña incorrectos.");
 		}
-	
-		private String obtenerRol(Persona persona) {
-			if (persona instanceof Administrador admin) {
-				return admin.getRol();
-			} else if (persona instanceof Usuario usuario) {
-				return usuario.getRol();
-			} else {
-				return "Usuario";
-			}
+
+		// si no se encuentra el usuario o el email o contraseña no coinciden
+		JOptionPane.showMessageDialog(null, "Correo o contraseña incorrectos.");
 	}
 
-
-
-
+	private String obtenerRol(Persona persona) {
+		if (persona instanceof Administrador admin) {
+			return admin.getRol();
+		} else if (persona instanceof Usuario usuario) {
+			return usuario.getRol();
+		} else {
+			return "Usuario";
+		}
+	}
 
 	private boolean emailExiste(String email) {
 		for (Persona persona : personasRegistradas) {
@@ -191,7 +204,7 @@ public class SistemaRegistro {
 				}
 			} else if (persona instanceof Administrador admin) {
 				if (admin.getEmail().equalsIgnoreCase(email)) {
-						return true;
+					return true;
 				}
 			}
 		}
