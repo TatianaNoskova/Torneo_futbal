@@ -7,8 +7,8 @@ public class Partido {
 	
 	private Estadio estadio;
 	
-	private Equipo equipo1;  // Первая команда
-    private Equipo equipo2;  // Вторая команда
+	private Equipo equipo1;  
+    private Equipo equipo2; 
     
     private LocalDate fecha;
     private LocalTime hora; 

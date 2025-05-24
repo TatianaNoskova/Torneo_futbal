@@ -14,6 +14,7 @@ public class SistemaRegistro {
 	private List<String> dtEmails;
 	private List<String> clubes;
 	private SistemaTorneos sistemaTorneos;
+	
 	public SistemaRegistro() {
 	
 	personasRegistradas = new ArrayList<>();
