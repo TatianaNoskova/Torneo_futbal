@@ -15,7 +15,7 @@ public class AdminClub extends Administrador {
 	private Club club;
 
 	public AdminClub(String nombre, String apellido, String email, String password) {
-		super(nombre, apellido, email, "Administrador del Club", password);
+		super(nombre, apellido, email,password, "Administrador del Club");
 	}
 	
 	public void setClub(Club club) {

@@ -119,7 +119,8 @@ public abstract class Usuario extends Persona {
 				"Ver próximos partidos",
 				"Elegir categoría de entrada",
 				"Comprar entrada",
-				"Solicitar reembolso",
+				(this.rol.equals("Admin")) ? "Poner entradas en venta" : "Solicitar reembolso",
+
 				"Volver"
 		};
 
@@ -143,6 +144,7 @@ public abstract class Usuario extends Persona {
 				"Ver disponibilidad",
 				"Ver reservas",
 				"Solicitar nueva reserva",
+
 				"Cancelar reserva",
 				"Volver"
 		};
@@ -287,7 +289,7 @@ public abstract class Usuario extends Persona {
 		}
 
 		StringBuilder resultado = new StringBuilder("Mis reservas:\n");
-		for (ReservaInstalacion reserva :this.misReservas) {
+		for (ReservaInstalacion reserva : this.misReservas) {
 			resultado.append(reserva.getUsuario().getNombre())
 					.append(" (Fecha de inicio: " + reserva.getFechaReservaInicio() + ")\n")
 					.append("Fecha de fin: " + reserva.getFechaReservaFin() + "\n");
@@ -478,7 +480,7 @@ public abstract class Usuario extends Persona {
 			return;
 		}
 		// eliminar reserva
-		
+
 		this.misReservas.remove(index);
 		// registrar motivo cancelacion
 		String motivoCancelacion = JOptionPane.showInputDialog(null,
