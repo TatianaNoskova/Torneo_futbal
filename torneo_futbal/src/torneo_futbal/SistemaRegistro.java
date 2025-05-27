@@ -6,7 +6,7 @@ import java.util.List;
 
 public class SistemaRegistro {
 
-	private List<Persona> personasRegistradas;
+	public static List<Persona> personasRegistradas;
 	private List<String> adminAFAEmails;
 	private List<String> adminClubEmails;
 	private List<String> socioEmails;
@@ -30,6 +30,7 @@ public class SistemaRegistro {
 		adminClubEmails = new ArrayList<>();
 		adminClubEmails.add("marta@mail.com");
 		AdminClub adminClub = new AdminClub("Marta", "Melillo", "marta@mail.com", "2468");
+		adminClub.setClub(clubesRegistrados.get(0));
 		personasRegistradas.add(adminClub);
 
 		socioEmails = new ArrayList<>();

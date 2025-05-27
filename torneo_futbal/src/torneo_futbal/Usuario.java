@@ -134,8 +134,7 @@ public abstract class Usuario extends Persona {
 				opciones[0]);
 
 		if (seleccion != null && !seleccion.equals("Volver")) {
-			JOptionPane.showMessageDialog(null,
-					"Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
+			GestorEntradas.comprarEntradas(SistemaRegistro.torneosRegistrados.get(0).getPartidosPorCategoria("Primera").get(0), "Primera");		
 		}
 	}
 

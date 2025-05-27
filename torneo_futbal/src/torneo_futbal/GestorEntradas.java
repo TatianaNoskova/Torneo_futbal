@@ -1,5 +1,6 @@
 package torneo_futbal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -7,7 +8,7 @@ import javax.swing.JOptionPane;
 
 public class GestorEntradas {
 
-    private static List<Entrada> entradasDisponibles;
+    private static List<Entrada> entradasDisponibles = new ArrayList<>();   
     private static int contadorIdEntradas = 1;
 
     public static void ponerEntradasEnVenta(Club club, Partido partido, Scanner entradas) {
@@ -118,5 +119,11 @@ public class GestorEntradas {
             JOptionPane.showMessageDialog(null, "Entrada no comprada");
         }
 
+    }
+    public static void agregarEntrada(Entrada entrada) {
+        entradasDisponibles.add(entrada);
+    }
+    public static List<Entrada> getEntradasDisponibles() {
+        return entradasDisponibles;
     }
 }

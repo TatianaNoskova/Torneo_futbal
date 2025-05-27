@@ -3,8 +3,11 @@ package torneo_futbal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatosSimulados {
+	public static List<Club> clubesRegistrados = new ArrayList<>();
 
 	public static void inicializar() {
 		// Creamos Varios Usuarios simulados
@@ -26,6 +29,14 @@ public class DatosSimulados {
 		Club club6 = new Club("Club F", "La Plata");
 		Club club7 = new Club("Club G", "Santiago del Estero");
 		Club club8 = new Club("Club H", "San Juan");
+		clubesRegistrados.add(club1);
+		clubesRegistrados.add(club2);
+		clubesRegistrados.add(club3);
+		clubesRegistrados.add(club4);
+		clubesRegistrados.add(club5);
+		clubesRegistrados.add(club6);
+		clubesRegistrados.add(club7);
+		clubesRegistrados.add(club8);
 
 		// Creamos varias disciplinas simuladas
 		Disciplina disciplina1 = new Disciplina("Tenis");
@@ -145,10 +156,10 @@ public class DatosSimulados {
 		SistemaRegistro.clubesRegistrados.add(club6);
 		SistemaRegistro.clubesRegistrados.add(club7);
 		SistemaRegistro.clubesRegistrados.add(club8);
+		// agregar club al administrador de club
 
 		// Torneo
 		Torneo torneo1 = new Torneo("Torneo Nacional 2025", "2025");
-		SistemaRegistro.torneosRegistrados.add(torneo1);
 
 		// Agregamos el equipo en la lista statica
 		torneo1.agregarEquipoParticipante(equipo1);
@@ -161,10 +172,28 @@ public class DatosSimulados {
 		torneo1.agregarEquipoParticipante(equipo8);
 
 		// ====== Partido de prueba ======
-crearPartido(equipo1, equipo2, torneo1, arbitro2, LocalDate.of(2025, 06, 01), LocalTime.of(17,30), club1);
-crearPartido(equipo3, equipo4, torneo1, arbitro1, LocalDate.of(2025, 06, 10), LocalTime.of(18,30), club3);
-crearPartido(equipo5, equipo6, torneo1, arbitro1, LocalDate.of(2025, 06, 15), LocalTime.of(19,30), club5);
-crearPartido(equipo7, equipo8, torneo1, arbitro2, LocalDate.of(2025, 06, 20), LocalTime.of(20,30), club7);
+		crearPartido(equipo1, equipo2, torneo1, arbitro2, LocalDate.of(2025, 06, 01), LocalTime.of(17, 30), club1);
+		crearPartido(equipo3, equipo4, torneo1, arbitro1, LocalDate.of(2025, 06, 10), LocalTime.of(18, 30), club3);
+		crearPartido(equipo5, equipo6, torneo1, arbitro1, LocalDate.of(2025, 06, 15), LocalTime.of(19, 30), club5);
+		crearPartido(equipo7, equipo8, torneo1, arbitro2, LocalDate.of(2025, 06, 20), LocalTime.of(20, 30), club7);
+
+		SistemaRegistro.torneosRegistrados.add(torneo1);
+
+		// mostrar torneos registrados
+		System.out.println("Torneos registrados");
+		for (Torneo torneo : SistemaRegistro.torneosRegistrados) {
+			for (Partido partido : torneo.getPartidosPorCategoria("Primera")) { // Или все категории?
+				System.out.println(partido.getEquipo1().getNombre() + " - " + partido.getEquipo2().getNombre());
+
+			}
+
+			System.out.println("---");
+		}
+		System.out.println("Fin de torneos registrados");
+		// crear entradas para cada partido
+		crearEntradasSimuladas(club1, torneo1.getPartidosPorCategoria("Primera").get(0));
+		crearEntradasSimuladas(club3, torneo1.getPartidosPorCategoria("Primera").get(2));
+	
 	}
 
 	private static void crearPartido(Equipo equipo1, Equipo equipo2, Torneo torneo, Arbitro arbitro, LocalDate fecha,
@@ -176,5 +205,31 @@ crearPartido(equipo7, equipo8, torneo1, arbitro2, LocalDate.of(2025, 06, 20), Lo
 		partido.setEstadio(club.getEstadios().get(0));
 		torneo.agregarPartido(partido);
 
+	}
+
+	private static void crearEntradasSimuladas(Club club, Partido partido) {
+		// catergorizacion de entradas
+		String[] categorias = { "palco", "vip", "popular", "platea" };
+		// precio de entradas
+		double[] precios = { 1000, 2000, 3000, 4000 };
+		// cantidad de entradas
+		int[] cantidades = { 100, 200, 300, 400 };
+		// crear entradas para cada categoria
+		for (int i = 0; i < categorias.length; i++) {
+			for (int j = 0; j < cantidades[i]; j++) {
+				Entrada entrada = new Entrada(partido, categorias[i], precios[i], j, false, club);
+				GestorEntradas.agregarEntrada(entrada);
+			}
+
+		}
+		// marcar entradas como vendidas
+		int entradasVendidas = 0;
+		for (Entrada entrada : GestorEntradas.getEntradasDisponibles()) {
+			if (entradasVendidas <50) {
+				entrada.setVendida(true);
+			}
+			entradasVendidas++;		
+		}
+		
 	}
 }
