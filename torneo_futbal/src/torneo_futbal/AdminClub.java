@@ -21,7 +21,8 @@ public class AdminClub extends Administrador {
 	public void setClub(Club club) {
 		this.club = club;
 	}
-
+	
+	 
   @Override
   public void mostrarMenu() {
     boolean salir = false;
@@ -33,9 +34,9 @@ public class AdminClub extends Administrador {
           "Registrar equipo",
           "Registrar disciplina y instalacion deportiva",
           "Registrar director técnico",
+          "Registrar correos de socios",
           "Gestionar disciplinas y actividades",
           "Reservar/administrar instalaciones",
-          "Agregar categorías de entradas",
           "Vender entradas",
           "Administrar beneficios y premios",
           "Salir"
@@ -65,6 +66,7 @@ public class AdminClub extends Administrador {
       case "Registrar equipo" -> registrarEquipo();
       case "Registrar disciplina y instalacion deportiva" -> registrarDisciplinaYInstalacion();
       case "Registrar director técnico" -> registrarDirectorTecnico();
+      case "Registrar correos de socios" -> registrarSocioPorEmail();
       case "Vender entradas" -> venderEntradas();
 
       // Otros opciones van a ser agregadas despues
@@ -470,6 +472,42 @@ public class AdminClub extends Administrador {
 
 	  return partidosDisponibles;
 	  }
+	  
+	  private void registrarSocioPorEmail() {
+		    if (club == null) {
+		        JOptionPane.showMessageDialog(null, "Primero debe registrar un club.");
+		        return;
+		    }
+
+		    String email = null;
+		    boolean emailValido = false;
+
+		    while (!emailValido) {
+		        email = JOptionPane.showInputDialog("Ingrese el correo electrónico del socio:");
+
+		        if (email == null || email.isBlank()) {
+		            JOptionPane.showMessageDialog(null, "El correo electrónico no puede estar vacío.");
+		            continue;
+		        }
+
+		        if (!email.contains("@")) {
+		            JOptionPane.showMessageDialog(null, "El correo electrónico ingresado no es válido. Debe contener '@'.");
+		            continue;
+		        }
+
+		        if (club.getSociosEmailList().contains(email.toLowerCase())) {
+		            JOptionPane.showMessageDialog(null, "Este correo ya está registrado como socio.");
+		            return;
+		        }
+
+		        emailValido = true;
+		    }
+
+		    club.getSociosEmailList().add(email.toLowerCase());
+
+		    JOptionPane.showMessageDialog(null, "El correo electrónico fue registrado exitosamente como socio permitido.");
+		}
+
 	  
 
 	  

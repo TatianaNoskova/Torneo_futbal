@@ -31,6 +31,12 @@ public class AdminAFA extends Administrador {
 		this.sistemaTorneos = sistemaTorneos;
 	}
 	
+	private Set<String> adminsClubEmailList = new HashSet<>();
+	
+	public Set<String> getAdminsClubEmailList() {
+	    return adminsClubEmailList;
+	}
+	
 	
 
 	
@@ -41,6 +47,7 @@ public class AdminAFA extends Administrador {
 	        while (!salir) {
 	            String[] opciones = {
 	                    "Organizar torneo",
+	                    "Registrar correos de administradores de los Clubes",
 	                    "Registrar árbitro",
 	                    "Asignar fechas y horarios",
 	                    "Capturar estadísticas y resultados",
@@ -68,6 +75,7 @@ public class AdminAFA extends Administrador {
 	    private void procesarOpcion(String seleccion) {
 	        switch (seleccion) {
 	            case "Organizar torneo" -> mostrarSubmenuOrganizarTorneo();
+	            case "Registrar correos de administradores de los Clubes" -> registrarAdminClubPorEmail();
 	            case "Registrar árbitro" -> registrarArbitro();
 	            case "Asignar fechas y horarios" -> mostrarSubmenuAsignarFechas();
 	            case "Capturar estadísticas y resultados" -> mostrarSubmenuCapturarResultados();
@@ -801,6 +809,37 @@ public class AdminAFA extends Administrador {
 
 	    	mostrarSubmenuCapturarResultados();
 	    	}
+	    
+	    private void registrarAdminClubPorEmail() {
+	        String email = null;
+	        boolean emailValido = false;
+
+	        while (!emailValido) {
+	            email = JOptionPane.showInputDialog("Ingrese el correo electrónico del administrador del club:");
+
+	            if (email == null || email.isBlank()) {
+	                JOptionPane.showMessageDialog(null, "El correo electrónico no puede estar vacío.");
+	                continue;
+	            }
+
+	            if (!email.contains("@")) {
+	                JOptionPane.showMessageDialog(null, "El correo electrónico ingresado no es válido. Debe contener '@'.");
+	                continue;
+	            }
+
+	            if (adminsClubEmailList.contains(email.toLowerCase())) {  // Используем поле экземпляра
+	                JOptionPane.showMessageDialog(null, "Este correo ya está registrado como administrador de club.");
+	                return;
+	            }
+
+	            emailValido = true;
+	        }
+
+	        adminsClubEmailList.add(email.toLowerCase());  // Добавляем в поле экземпляра
+
+	        JOptionPane.showMessageDialog(null, "El correo fue registrado exitosamente como administrador de club permitido.");
+	    }
+
 
 }
 

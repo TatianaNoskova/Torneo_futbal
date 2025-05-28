@@ -1,7 +1,9 @@
 package torneo_futbal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Club {
     private String nombre;
@@ -11,6 +13,7 @@ public class Club {
     private List<Disciplina> disciplinas;
     private List<InstalacionDeportiva> instalaciones;
     private List<DirectorTecnico> directoresTecnicos;
+    private Set<String> sociosEmailList = new HashSet<>();
 
     public Club(String nombre, String direccion) {
         this.nombre = nombre;
@@ -69,6 +72,10 @@ public class Club {
 
     public List<DirectorTecnico> getDirectoresTecnicos() {
         return directoresTecnicos;
+    }
+    
+    public Set<String> getSociosEmailList() {
+        return sociosEmailList;
     }
 
     @Override
