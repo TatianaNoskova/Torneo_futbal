@@ -80,7 +80,9 @@ public class Torneo {
         }
         return partidosPorCategoria;
     }
-
+public List<Partido> getPartidos() {
+	return partidos;
+}
    
 }
 	
