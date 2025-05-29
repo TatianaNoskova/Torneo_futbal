@@ -161,7 +161,7 @@ public abstract class Usuario extends Persona {
 		}
 
 		switch (seleccion) {
-			case "Ver disponibilidad" -> verInstalacionesDisponibles(clubesRegistrados);
+			/* case "Ver disponibilidad" -> verInstalacionesDisponibles(clubesRegistrados); */
 			case "Ver reservas" -> mostrarMisReservas();
 			case "Solicitar nueva reserva" -> realizarNuevaReserva();
 			case "Cancelar reserva" -> cancelarReserva();
@@ -227,6 +227,7 @@ public abstract class Usuario extends Persona {
 		}
 	}
 
+	/*
 	// Metodo para ver las instalaciones disponibles
 	private void verInstalacionesDisponibles(List<Club> clubes) {
 		if (clubes.isEmpty()) {
@@ -277,7 +278,7 @@ public abstract class Usuario extends Persona {
 					.append(" (Capacidad: " + instalacionDeportiva.getCapacidad() + ")\n");
 		}
 		JOptionPane.showMessageDialog(null, resultado.toString());
-	}
+	} */
 
 	private void mostrarMisReservas() {
 		// Verificar si hay reservas
@@ -293,7 +294,7 @@ public abstract class Usuario extends Persona {
 					.append("Fecha de fin: " + reserva.getFechaReservaFin() + "\n");
 		}
 		JOptionPane.showMessageDialog(null, resultado.toString());
-	}
+	} 
 
 	private void realizarNuevaReserva() {
 		// verificar si hay clubes

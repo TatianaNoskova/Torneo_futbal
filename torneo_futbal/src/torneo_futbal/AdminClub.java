@@ -2,6 +2,8 @@ package torneo_futbal;
 
 import java.awt.Image;
 import java.io.File;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -225,6 +227,19 @@ public class AdminClub extends Administrador {
     String nombreInstalacion = JOptionPane.showInputDialog("Ingrese el nombre de la instalación deportiva:");
     String direccionInstalacion = JOptionPane.showInputDialog("Ingrese la dirección de la instalación deportiva:");
     String descripcion=JOptionPane.showInputDialog("Ingrese una breve discripción (capacidad etc.)");
+    String aperturaStr = JOptionPane.showInputDialog("Ingrese la hora de apertura (HH:mm):");
+    String cierreStr = JOptionPane.showInputDialog("Ingrese la hora de cierre (HH:mm):");
+
+    LocalTime horaApertura;
+    LocalTime horaCierre;
+
+    try {
+        horaApertura = LocalTime.parse(aperturaStr);
+        horaCierre = LocalTime.parse(cierreStr);
+    } catch (DateTimeParseException e) {
+        JOptionPane.showMessageDialog(null, "Formato de hora inválido.");
+        return;
+    }
 
     if (nombreDisciplina == null || nombreInstalacion == null ||
         nombreDisciplina.isBlank() || nombreInstalacion.isBlank()) {
