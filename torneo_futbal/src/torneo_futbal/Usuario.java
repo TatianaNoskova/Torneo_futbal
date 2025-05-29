@@ -10,6 +10,7 @@ public abstract class Usuario extends Persona {
 
 	protected String rol;
 	protected List<ReservaInstalacion> misReservas;
+	private List<Compra> misCompras;
 
 	public Usuario(String nombre, String apellido, String email, String password, String rol) {
 		super(nombre, apellido, email, password);
@@ -18,6 +19,7 @@ public abstract class Usuario extends Persona {
 		ReservaInstalacion reserva1 = new ReservaInstalacion(this, LocalDateTime.now().plusDays(5),
 				LocalDateTime.now().plusDays(5).plusHours(5));
 		this.agregarReserva(reserva1);
+		this.misCompras = new ArrayList<>();
 	}
 
 	// getters y setters
@@ -32,6 +34,14 @@ public abstract class Usuario extends Persona {
 
 	public void agregarReserva(ReservaInstalacion reserva) {
 		misReservas.add(reserva);
+	}
+
+	public List<Compra> getMisCompras() {
+		return misCompras;
+	}
+
+	public void agregarCompra(Compra compra) {
+		misCompras.add(compra);
 	}
 
 	@Override
@@ -115,11 +125,14 @@ public abstract class Usuario extends Persona {
 	}
 
 	private void mostrarSubmenuCompraEntradas() {
+		GestorCompra gestorCompra = Main.GestorCompra();
+		GestorEntradas gestorEntradas = Main.GestorEntradas();
+
 		String[] opciones = {
-				"Ver próximos partidos",
-				"Elegir categoría de entrada",
+
 				"Comprar entrada",
-				"Solicitar reembolso",
+				"Ver mis compras",
+
 				"Volver"
 		};
 
@@ -132,10 +145,43 @@ public abstract class Usuario extends Persona {
 				opciones,
 				opciones[0]);
 
-		if (seleccion != null && !seleccion.equals("Volver")) {
-			JOptionPane.showMessageDialog(null,
-					"Has seleccionado: " + seleccion + "\n(Función aún no implementada)");
+		if (seleccion == null || seleccion.equals("Volver")) {
+			return;
+		
 		}
+		switch (seleccion) {
+			case "Comprar entrada":
+				Entrada entrada = gestorCompra.comprarEntrada(this);
+				if (entrada != null) {
+					boolean pagoExitoso = gestorCompra.procesarPago(entrada, this);
+
+					if (pagoExitoso) {
+						 gestorCompra.confirmarCompra(this, entrada);
+					}
+				}
+				break;
+			case "Ver mis compras":
+				mostrarMisCompras();
+				break;
+			default:
+				JOptionPane.showMessageDialog(null, "Opción no válida.");
+
+				break;
+		}
+	}
+
+	private void mostrarMisCompras() {
+		// Verificar si hay compras
+		if (this.misCompras.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "No tienes compras.");
+			return;
+		}
+		StringBuilder resultado = new StringBuilder("Mis compras:\n");
+		for (Compra compra : this.misCompras) {
+			resultado.append(compra.getUsuario().getNombre())
+					.append(" (Fecha de compra: " + compra.getFecha() + ")\n");
+		}
+		JOptionPane.showMessageDialog(null, resultado.toString());
 	}
 
 	private void mostrarSubmenuReservarInstalacion(List<Club> clubesRegistrados) {
@@ -287,7 +333,7 @@ public abstract class Usuario extends Persona {
 		}
 
 		StringBuilder resultado = new StringBuilder("Mis reservas:\n");
-		for (ReservaInstalacion reserva :this.misReservas) {
+		for (ReservaInstalacion reserva : this.misReservas) {
 			resultado.append(reserva.getUsuario().getNombre())
 					.append(" (Fecha de inicio: " + reserva.getFechaReservaInicio() + ")\n")
 					.append("Fecha de fin: " + reserva.getFechaReservaFin() + "\n");
@@ -478,7 +524,7 @@ public abstract class Usuario extends Persona {
 			return;
 		}
 		// eliminar reserva
-		
+
 		this.misReservas.remove(index);
 		// registrar motivo cancelacion
 		String motivoCancelacion = JOptionPane.showInputDialog(null,
