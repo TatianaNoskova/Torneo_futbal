@@ -223,7 +223,8 @@ public class AdminClub extends Administrador {
 
     String nombreDisciplina = JOptionPane.showInputDialog("Ingrese el nombre de la disciplina:");
     String nombreInstalacion = JOptionPane.showInputDialog("Ingrese el nombre de la instalación deportiva:");
-    String direccionInstalacion = JOptionPane.showInputDialog("Ingrese la direcciòn de la instalación deportiva:");
+    String direccionInstalacion = JOptionPane.showInputDialog("Ingrese la dirección de la instalación deportiva:");
+    String descripcion=JOptionPane.showInputDialog("Ingrese una breve discripción (capacidad etc.)");
 
     if (nombreDisciplina == null || nombreInstalacion == null ||
         nombreDisciplina.isBlank() || nombreInstalacion.isBlank()) {
