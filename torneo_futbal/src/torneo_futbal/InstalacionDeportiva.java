@@ -12,23 +12,32 @@ public class InstalacionDeportiva {
     private String direccion; // Direcciòn
     private Disciplina disciplina; // Associated disciplines
     private String descripcion;
-    
+    private int capacidad;
+
     // agregar horario
-    
+
     private LocalTime horaApertura;
     private LocalTime horaCierre;
 
-    
     private List<ReservaInstalacion> reservas; // Reservations
 
     // Constructor
-    public InstalacionDeportiva(String nombreInstalacion, String direccion, Disciplina disciplina, int capacidad) {
+    public InstalacionDeportiva(String nombreInstalacion, String direccion, Disciplina disciplina, int capacidad,
+            String descripcion, LocalTime horaApertura, LocalTime horaCierre) {
         this.nombreInstalacion = nombreInstalacion;
         this.direccion = direccion;
         this.descripcion = descripcion;
         this.disciplina = disciplina;
         this.horaApertura = horaApertura;
         this.horaCierre = horaCierre;
+        this.reservas = new ArrayList<>();
+        this.capacidad = capacidad;
+    }
+
+    public InstalacionDeportiva(String nombreInstalacion, String direccion, Disciplina disciplina, int capacidad) {
+        this.nombreInstalacion = nombreInstalacion;
+        this.direccion = direccion;
+        this.disciplina = disciplina;
         this.reservas = new ArrayList<>();
     }
 
@@ -45,7 +54,6 @@ public class InstalacionDeportiva {
         return descripcion;
     }
 
-    
     public String getDireccion() {
         return direccion;
     }
@@ -61,16 +69,25 @@ public class InstalacionDeportiva {
     public List<ReservaInstalacion> getReservas() {
         return new ArrayList<>(reservas);
     }
+    // setters y getters de capacidad
+
+    public void setCapacidad(int capacidad) {
+        this.capacidad = capacidad;
+    }
+
+    public int getCapacidad() {
+        return capacidad;
+    }
 
     // setters disciplinas and reservas
 
     public void setDisciplina(Disciplina disciplina) {
         this.disciplina = disciplina;
-        
+
     }
-    
+
     // setters horario
-    
+
     public void setHoraApertura(LocalTime horaApertura) {
         this.horaApertura = horaApertura;
     }
@@ -79,7 +96,6 @@ public class InstalacionDeportiva {
         this.horaCierre = horaCierre;
     }
 
-    
     public List<LocalDateTime[]> obtenerSlotsDisponibles(LocalDate fecha) {
         List<LocalDateTime[]> disponibles = new ArrayList<>();
 
@@ -90,7 +106,7 @@ public class InstalacionDeportiva {
             LocalDateTime fin = inicio.plusHours(1);
 
             if (estaDisponible(inicio, fin)) {
-                disponibles.add(new LocalDateTime[]{inicio, fin});
+                disponibles.add(new LocalDateTime[] { inicio, fin });
             }
 
             inicio = fin;
@@ -98,7 +114,6 @@ public class InstalacionDeportiva {
 
         return disponibles;
     }
-
 
     public void setReservas(ReservaInstalacion reserva) {
         this.reservas.add(reserva);
