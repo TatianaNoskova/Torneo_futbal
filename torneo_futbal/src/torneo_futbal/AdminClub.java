@@ -33,6 +33,7 @@ public class AdminClub extends Administrador {
 					"Registrar equipo",
 					"Registrar disciplina y instalacion deportiva",
 					"Registrar director técnico",
+					"Registrar correos de socios",
 					"Gestionar disciplinas y actividades",
 					"Reservar/administrar instalaciones",
 					"Agregar categorías de entradas",
@@ -66,7 +67,7 @@ public class AdminClub extends Administrador {
 			case "Registrar disciplina y instalacion deportiva" -> registrarDisciplinaYInstalacion();
 			case "Registrar director técnico" -> registrarDirectorTecnico();
 			case "Vender entradas" -> venderEntradas();
-
+			case "Registrar correos de socios" -> registrarSocioPorEmail();
 			// Otros opciones van a ser agregadas despues
 
 			default -> JOptionPane.showMessageDialog(null,
@@ -222,7 +223,7 @@ public class AdminClub extends Administrador {
 		String nombreDisciplina = JOptionPane.showInputDialog("Ingrese el nombre de la disciplina:");
 		String nombreInstalacion = JOptionPane.showInputDialog("Ingrese el nombre de la instalación deportiva:");
 		String direccionInstalacion = JOptionPane.showInputDialog("Ingrese la direcciòn de la instalación deportiva:");
-
+		String descripcion = JOptionPane.showInputDialog("Ingrese una breve discripción (capacidad etc.)");
 		if (nombreDisciplina == null || nombreInstalacion == null ||
 				nombreDisciplina.isBlank() || nombreInstalacion.isBlank()) {
 			JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
@@ -463,4 +464,38 @@ public class AdminClub extends Administrador {
 		return partidosDisponibles;
 	}
 
+	private void registrarSocioPorEmail() {
+		if (club == null) {
+			JOptionPane.showMessageDialog(null, "Primero debe registrar un club.");
+			return;
+		}
+
+		String email = null;
+		boolean emailValido = false;
+
+		while (!emailValido) {
+			email = JOptionPane.showInputDialog("Ingrese el correo electrónico del socio:");
+
+			if (email == null || email.isBlank()) {
+				JOptionPane.showMessageDialog(null, "El correo electrónico no puede estar vacío.");
+				continue;
+			}
+
+			if (!email.contains("@")) {
+				JOptionPane.showMessageDialog(null, "El correo electrónico ingresado no es válido. Debe contener '@'.");
+				continue;
+			}
+
+			if (club.getSociosEmailList().contains(email.toLowerCase())) {
+				JOptionPane.showMessageDialog(null, "Este correo ya está registrado como socio.");
+				return;
+			}
+
+			emailValido = true;
+		}
+
+		club.getSociosEmailList().add(email.toLowerCase());
+
+		JOptionPane.showMessageDialog(null, "El correo electrónico fue registrado exitosamente como socio permitido.");
+	}
 }

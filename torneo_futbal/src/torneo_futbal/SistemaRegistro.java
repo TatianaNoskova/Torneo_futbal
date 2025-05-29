@@ -14,9 +14,9 @@ public class SistemaRegistro {
 	private List<String> dtEmails;
 	private List<String> clubes;
 	private SistemaTorneos sistemaTorneos;
-
+	
 	public SistemaRegistro() {
-
+	
 		personasRegistradas = new ArrayList<>();
 		sistemaTorneos = new SistemaTorneos();
 
@@ -46,10 +46,10 @@ public class SistemaRegistro {
 		dtEmails = new ArrayList<>();
 		dtEmails.add("director.tecnico1@futbol.com");
 	}
-
+	
 	public static List<Club> clubesRegistrados = new ArrayList<>();
 	public static List<Torneo> torneosRegistrados = new ArrayList<>();
-
+	
 	public void iniciarRegistro() {
 		String[] opciones = { "Registrarse", "Iniciar sesión" };
 		String seleccion = (String) JOptionPane.showInputDialog(null,
@@ -58,18 +58,19 @@ public class SistemaRegistro {
 				JOptionPane.QUESTION_MESSAGE,
 				null,
 				opciones,
-				opciones[0]);
+				opciones[0]
+				);
 
-		if (seleccion == null) {
-			JOptionPane.showMessageDialog(null, "Operación cancelada.");
-			return;
-		}
+			if (seleccion == null) {
+				JOptionPane.showMessageDialog(null, "Operación cancelada.");
+				return;
+				}
 
-		if (seleccion.equals("Registrarse")) {
-			registrarNuevoUsuario();
-		} else {
-			iniciarSesion();
-		}
+			if (seleccion.equals("Registrarse")) {
+				registrarNuevoUsuario();
+			} else {
+				iniciarSesion();
+			}
 	}
 
 	private void registrarNuevoUsuario() {
@@ -78,6 +79,7 @@ public class SistemaRegistro {
 
 		while (true) {
 			email = JOptionPane.showInputDialog("Ingrese su correo electrónico:");
+
 			if (email == null || email.isBlank() || !email.contains("@")) {
 				JOptionPane.showMessageDialog(null, "Correo inválido.");
 				continue;
@@ -87,10 +89,12 @@ public class SistemaRegistro {
 				JOptionPane.showMessageDialog(null, "Este correo ya está registrado.");
 				continue;
 			}
+
 			break;
 		}
 		while (true) {
 			password = JOptionPane.showInputDialog("Cree una contraseña:");
+			
 			if (password == null || password.isBlank()) {
 				JOptionPane.showMessageDialog(null, "Debe ingresar una contraseña.");
 				continue;
@@ -145,21 +149,22 @@ public class SistemaRegistro {
 						adminClub.setClub(c);
 						break;
 					}
+
 				}
 				persona = adminClub;
 			}
 			case "Socio del club" -> persona = new Socio(nombre, apellido, email, password);
 			default -> persona = new Publico(nombre, apellido, email, password);
 		}
-
+		
 		// Guardamos la contraseña
-		if (persona instanceof Usuario usuario) {
-			usuario.setPassword(password);
-		}
+				if (persona instanceof Usuario usuario) {
+					usuario.setPassword(password);
+				}
 
-		personasRegistradas.add(persona);
-		JOptionPane.showMessageDialog(null, "¡Registro exitoso como " + rol + "!");
-		persona.mostrarMenu();
+				personasRegistradas.add(persona);
+				JOptionPane.showMessageDialog(null, "¡Registro exitoso como " + rol + "!");
+				persona.mostrarMenu();
 	}
 
 	private void iniciarSesion() {
@@ -175,29 +180,33 @@ public class SistemaRegistro {
 			return;
 		}
 
+
 		// Busqueda por todos los tipos de usuarios
-		for (Persona persona : personasRegistradas) {
+				for (Persona persona : personasRegistradas) {
 			// Verificamos email и password
 			if (persona.getEmail().equalsIgnoreCase(email) && persona.getPassword().equals(password)) {
 				JOptionPane.showMessageDialog(null, "¡Inicio de sesión exitoso como " + obtenerRol(persona) + "!");
-				persona.mostrarMenu();
+				persona.mostrarMenu(); 
 				return;
+				}
 			}
+			
+			// si no se encuentra el usuario o el email o contraseña no coinciden
+			JOptionPane.showMessageDialog(null, "Correo o contraseña incorrectos.");
 		}
-
-		// si no se encuentra el usuario o el email o contraseña no coinciden
-		JOptionPane.showMessageDialog(null, "Correo o contraseña incorrectos.");
+			private String obtenerRol(Persona persona) {
+				if (persona instanceof Administrador admin) {
+					return admin.getRol();
+				} else if (persona instanceof Usuario usuario) {
+					return usuario.getRol();
+				} else {
+					return "Usuario";
+					
+	}
+	
+		
 	}
 
-	private String obtenerRol(Persona persona) {
-		if (persona instanceof Administrador admin) {
-			return admin.getRol();
-		} else if (persona instanceof Usuario usuario) {
-			return usuario.getRol();
-		} else {
-			return "Usuario";
-		}
-	}
 
 	private boolean emailExiste(String email) {
 		for (Persona persona : personasRegistradas) {
@@ -207,7 +216,7 @@ public class SistemaRegistro {
 				}
 			} else if (persona instanceof Administrador admin) {
 				if (admin.getEmail().equalsIgnoreCase(email)) {
-					return true;
+						return true;
 				}
 			}
 		}
