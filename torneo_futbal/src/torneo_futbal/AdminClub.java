@@ -2,6 +2,10 @@ package torneo_futbal;
 
 import java.awt.Image;
 import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -68,6 +72,7 @@ public class AdminClub extends Administrador {
 			case "Registrar director técnico" -> registrarDirectorTecnico();
 			case "Vender entradas" -> venderEntradas();
 			case "Registrar correos de socios" -> registrarSocioPorEmail();
+			case "Reservar/administrar instalaciones" -> gestionarReservasInstalaciones();
 			// Otros opciones van a ser agregadas despues
 
 			default -> JOptionPane.showMessageDialog(null,
@@ -497,5 +502,166 @@ public class AdminClub extends Administrador {
 		club.getSociosEmailList().add(email.toLowerCase());
 
 		JOptionPane.showMessageDialog(null, "El correo electrónico fue registrado exitosamente como socio permitido.");
+	}
+
+	private void gestionarReservasInstalaciones() {
+		if (club == null) {
+			JOptionPane.showMessageDialog(null, "Primero debe registrar un club.");
+			return;
+		}
+
+		while (true) {
+			String[] opciones = {
+					"Ver reservas",
+					"Realizar nueva reserva",
+					"Cancelar reserva",
+					"Salir"
+			};
+
+			String seleccion = (String) JOptionPane.showInputDialog(
+					null,
+					"Submenú - Gestión de reservas y instalaciones",
+					"Opciones",
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					opciones,
+					opciones[0]);
+
+			if (seleccion == null || seleccion.equals("Salir")) {
+				return;
+			}
+			switch (seleccion) {
+				case "Ver reservas" -> mostrarReservas();
+				case "Realizar nueva reserva" -> realizarNuevaReserva();
+				case "Cancelar reserva" -> cancelarReserva();
+				default -> JOptionPane.showMessageDialog(null, "Opción no válida.");
+			}
+		}
+	}
+
+	private void mostrarReservas() {
+
+	}
+
+	private void realizarNuevaReserva() {
+		List<InstalacionDeportiva> instalaciones = club.getInstalaciones();
+		if (instalaciones.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "No hay instalaciones en el club.");
+			return;
+		}
+		String[] nombresInstalaciones = new String[instalaciones.size()];
+		for (int i = 0; i < instalaciones.size(); i++) {
+			nombresInstalaciones[i] = instalaciones.get(i).getNombreInstalacion();
+		}
+		String seleccion = (String) JOptionPane.showInputDialog(
+				null,
+				"Seleccione la instalación:",
+				"Instalación",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				nombresInstalaciones,
+				nombresInstalaciones[0]);
+
+		if (seleccion == null) {
+			JOptionPane.showMessageDialog(null, "No se seleccionó ningún instalación.");
+			return;
+		}
+
+		InstalacionDeportiva instalacionSeleccionada = null;
+		for (InstalacionDeportiva instalacion : instalaciones) {
+			if (instalacion.getNombreInstalacion().equals(seleccion)) {
+				instalacionSeleccionada = instalacion;
+				break;
+			}
+		}
+
+		if (instalacionSeleccionada == null) {
+			JOptionPane.showMessageDialog(null, "Instalación no válida.");
+			return;
+		}
+
+		// Seleccionar fecha de inicio
+		String fechaInicio = JOptionPane.showInputDialog(null,
+				"Ingrese la fecha de inicio(aaaa-mm-dd):",
+				"Fecha de inicio",
+				JOptionPane.QUESTION_MESSAGE);
+
+		// Verificar fecha de inicio
+		if (fechaInicio == null || fechaInicio.isBlank()) {
+			JOptionPane.showMessageDialog(null, "Debe ingresar una fecha.");
+			return;
+		}
+		// Seleccionar hora de inicio
+		String horaInicio = JOptionPane.showInputDialog(null,
+				"Ingrese la hora de inicio(hh:mm):",
+				"Hora de inicio",
+				JOptionPane.QUESTION_MESSAGE);
+
+		// Verificar hora de inicio
+		if (horaInicio == null || horaInicio.isBlank()) {
+			JOptionPane.showMessageDialog(null, "Debe ingresar una hora.");
+			return;
+		}
+		LocalDate fechaReserva = LocalDate.parse(fechaInicio, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		LocalTime horaReserva = LocalTime.parse(horaInicio, DateTimeFormatter.ofPattern("HH:mm"));
+		// chequear q la fecha no sea en el pasado
+		if (fechaReserva.isBefore(LocalDate.now())) {
+			JOptionPane.showMessageDialog(null, "La fecha de inicio no puede ser anterior a la fecha actual.");
+			return;
+		}
+
+		// verificar disponibilidad
+		if (instalacionSeleccionada.getHoraApertura() == null) {
+			instalacionSeleccionada.setHoraApertura(LocalTime.of(07, 00));
+
+		}
+		if (instalacionSeleccionada.getHoraCierre() == null) {
+			instalacionSeleccionada.setHoraCierre(LocalTime.of(21, 00));
+
+		}
+		List<LocalDateTime[]> disponibles = instalacionSeleccionada.obtenerSlotsDisponibles(fechaReserva);
+		if (disponibles.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "La instalación no está disponible.");
+			return;
+		}
+		String[] nombresDisponibles = new String[disponibles.size()];
+		for (int i = 0; i < disponibles.size(); i++) {
+			nombresDisponibles[i] = "Id= " + disponibles.get(i)[0] + " - hora= " + disponibles.get(i)[1];
+		}
+		String disponibilidadSeleccionada = (String) JOptionPane.showInputDialog(
+				null,
+				"Seleccione la disponibilidad:",
+				"Reserva",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				nombresDisponibles,
+				nombresDisponibles[0]);
+		if (disponibilidadSeleccionada == null) {
+			JOptionPane.showMessageDialog(null, "No se seleccionó ningún disponibilidad.");
+			return;
+		}
+		LocalDateTime[] disponibilidad = null;
+		for (LocalDateTime[] disponibilidad1 : disponibles) {
+			if (disponibilidad1[0].toString().equals(disponibilidadSeleccionada)) {
+				disponibilidad = disponibilidad1;
+				break;
+			}
+		}
+		if (disponibilidad == null) {
+			JOptionPane.showMessageDialog(null, "Disponibilidad no válida.");
+			return;
+		}
+		// crear reserva
+
+		String nombreUsuario = JOptionPane.showInputDialog("Ingrese el nombre del usuario:");
+		if (nombreUsuario == null || nombreUsuario.isBlank()) {
+			JOptionPane.showMessageDialog(null, "Debe ingresar un nombre.");
+			return;
+		}
+
+	}
+
+	private void cancelarReserva() {
+
 	}
 }

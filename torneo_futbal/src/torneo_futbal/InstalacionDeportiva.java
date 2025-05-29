@@ -12,13 +12,12 @@ public class InstalacionDeportiva {
     private String direccion; // Direcciòn
     private Disciplina disciplina; // Associated disciplines
     private String descripcion;
-    
+
     // agregar horario
-    
+
     private LocalTime horaApertura;
     private LocalTime horaCierre;
 
-    
     private List<ReservaInstalacion> reservas; // Reservations
 
     // Constructor
@@ -45,7 +44,6 @@ public class InstalacionDeportiva {
         return descripcion;
     }
 
-    
     public String getDireccion() {
         return direccion;
     }
@@ -66,11 +64,11 @@ public class InstalacionDeportiva {
 
     public void setDisciplina(Disciplina disciplina) {
         this.disciplina = disciplina;
-        
+
     }
-    
+
     // setters horario
-    
+
     public void setHoraApertura(LocalTime horaApertura) {
         this.horaApertura = horaApertura;
     }
@@ -79,7 +77,15 @@ public class InstalacionDeportiva {
         this.horaCierre = horaCierre;
     }
 
-    
+    // getters horario
+    public LocalTime getHoraApertura() {
+        return horaApertura;
+    }
+
+    public LocalTime getHoraCierre() {
+        return horaCierre;
+    }
+
     public List<LocalDateTime[]> obtenerSlotsDisponibles(LocalDate fecha) {
         List<LocalDateTime[]> disponibles = new ArrayList<>();
 
@@ -90,7 +96,7 @@ public class InstalacionDeportiva {
             LocalDateTime fin = inicio.plusHours(1);
 
             if (estaDisponible(inicio, fin)) {
-                disponibles.add(new LocalDateTime[]{inicio, fin});
+                disponibles.add(new LocalDateTime[] { inicio, fin });
             }
 
             inicio = fin;
@@ -98,7 +104,6 @@ public class InstalacionDeportiva {
 
         return disponibles;
     }
-
 
     public void setReservas(ReservaInstalacion reserva) {
         this.reservas.add(reserva);
