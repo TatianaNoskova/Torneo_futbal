@@ -145,8 +145,9 @@ public abstract class Usuario extends Persona {
 				opciones,
 				opciones[0]);
 
-		if (seleccion != null && !seleccion.equals("Volver")) {
+		if (seleccion == null || seleccion.equals("Volver")) {
 			return;
+		
 		}
 		switch (seleccion) {
 			case "Comprar entrada":
@@ -188,7 +189,6 @@ public abstract class Usuario extends Persona {
 				"Ver disponibilidad",
 				"Ver reservas",
 				"Solicitar nueva reserva",
-
 				"Cancelar reserva",
 				"Volver"
 		};

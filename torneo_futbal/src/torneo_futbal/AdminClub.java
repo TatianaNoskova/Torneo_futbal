@@ -369,7 +369,7 @@ public class AdminClub extends Administrador {
 		int entradasRestantes = capacidadEstadio;
 
 		Set<String> categoriasProcesadas = new HashSet<>();
-		String[] categorias = { "VIP", "General", "Economía" };
+		String[] categorias = { "palco", "vip", "popular", "platea" };
 
 		while (categoriasProcesadas.size() < categorias.length && entradasRestantes > 0) {
 			List<String> restantes = new ArrayList<>();
