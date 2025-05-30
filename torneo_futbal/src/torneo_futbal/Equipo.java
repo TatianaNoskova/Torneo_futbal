@@ -6,6 +6,8 @@ import javax.swing.ImageIcon;
 
 public class Equipo {
 	
+	
+		protected int idEquipo;
 	    private String nombre;
 	    private String categoria;
 	    private String colores;
@@ -14,12 +16,17 @@ public class Equipo {
 	    
 	    private DirectorTecnico directorTecnico;
 
-	    public Equipo(String nombre, String categoria, String colores, String rutaEscudo, Estadio estadioLocal) {
-	        this.nombre = nombre;
+	    public Equipo(int idEquipo, String nombre, String categoria, String colores, String rutaEscudo, Estadio estadioLocal) {
+	        this.idEquipo = idEquipo;
+	    	this.nombre = nombre;
 	        this.categoria = categoria;
 	        this.colores = colores;
 	        this.rutaEscudo = rutaEscudo; // Creamos un ImageIcon con el escudo del equipo, usando la ruta del archivo de imagen seleccionada por el usuario
 	        this.estadioLocal = estadioLocal;
+	    }
+	    
+	    public int getIdEquipo() {
+	        return idEquipo;
 	    }
 
 	    public String getNombre() {

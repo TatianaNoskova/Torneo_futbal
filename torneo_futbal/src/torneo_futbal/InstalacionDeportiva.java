@@ -12,6 +12,7 @@ public class InstalacionDeportiva {
     private String direccion; // Direcciòn
     private Disciplina disciplina; // Associated disciplines
     private String descripcion;
+    private int capacidad;
 
     // agregar horario
 
@@ -21,13 +22,22 @@ public class InstalacionDeportiva {
     private List<ReservaInstalacion> reservas; // Reservations
 
     // Constructor
-    public InstalacionDeportiva(String nombreInstalacion, String direccion, Disciplina disciplina, int capacidad) {
+    public InstalacionDeportiva(String nombreInstalacion, String direccion, Disciplina disciplina, int capacidad,
+            String descripcion, LocalTime horaApertura, LocalTime horaCierre) {
         this.nombreInstalacion = nombreInstalacion;
         this.direccion = direccion;
         this.descripcion = descripcion;
         this.disciplina = disciplina;
         this.horaApertura = horaApertura;
         this.horaCierre = horaCierre;
+        this.reservas = new ArrayList<>();
+        this.capacidad = capacidad;
+    }
+
+    public InstalacionDeportiva(String nombreInstalacion, String direccion, Disciplina disciplina, int capacidad) {
+        this.nombreInstalacion = nombreInstalacion;
+        this.direccion = direccion;
+        this.disciplina = disciplina;
         this.reservas = new ArrayList<>();
     }
 
@@ -59,6 +69,15 @@ public class InstalacionDeportiva {
     public List<ReservaInstalacion> getReservas() {
         return new ArrayList<>(reservas);
     }
+    // setters y getters de capacidad
+
+    public void setCapacidad(int capacidad) {
+        this.capacidad = capacidad;
+    }
+
+    public int getCapacidad() {
+        return capacidad;
+    }
 
     // setters disciplinas and reservas
 
@@ -75,15 +94,6 @@ public class InstalacionDeportiva {
 
     public void setHoraCierre(LocalTime horaCierre) {
         this.horaCierre = horaCierre;
-    }
-
-    // getters horario
-    public LocalTime getHoraApertura() {
-        return horaApertura;
-    }
-
-    public LocalTime getHoraCierre() {
-        return horaCierre;
     }
 
     public List<LocalDateTime[]> obtenerSlotsDisponibles(LocalDate fecha) {

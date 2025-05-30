@@ -4,36 +4,48 @@ package torneo_futbal;
 	import java.sql.Connection;
 	import java.sql.DriverManager;
 	import java.sql.SQLException;
+	
+
+	import java.sql.Connection;
+	import java.sql.DriverManager;
+	import java.sql.SQLException;
 
 	public class Conexion {
-	    private static final String URL = "jdbc:mysql://localhost:3306/escuela?useSSL=false&serverTimezone=UTC";
-	    private static final String USER = "root";
-	    private static final String PASSWORD = "";
 
-	    private static Connection conect;
 	    private static Conexion instance;
+	    private Connection connection;
+
+	    private final String URL = "jdbc:mysql://localhost:3306/torneo_futbol?useSSL=false&serverTimezone=UTC";
+	    private final String USER = "root";
+	    private final String PASSWORD = "";
 
 	    private Conexion() {
 	        try {
-	            conect = DriverManager.getConnection(URL, USER, PASSWORD);
-	            System.out.println("Se conectó");
-	        } catch (SQLException e) {
-	            System.out.println("No se conectó");
+	            Class.forName("com.mysql.cj.jdbc.Driver");
+	            this.connection = DriverManager.getConnection(URL, USER, PASSWORD);
+	        } catch (ClassNotFoundException | SQLException e) {
 	            e.printStackTrace();
+	            System.out.println("No se conectó");
 	        }
+	    }
+
+	    public Connection getConnection() {
+	        return connection;
 	    }
 
 	    public static Conexion getInstance() {
 	        if (instance == null) {
 	            instance = new Conexion();
+	        } else {
+	            try {
+	                if (instance.getConnection().isClosed()) {
+	                    instance = new Conexion();
+	                }
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
 	        }
 	        return instance;
 	    }
+	}
 
-	    public Connection getConnection() {
-	        return conect;
-	    }
-	
-
-
-}
