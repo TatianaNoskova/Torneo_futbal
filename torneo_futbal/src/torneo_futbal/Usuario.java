@@ -68,7 +68,7 @@ public abstract class Usuario extends Persona {
 		switch (seleccion) {
 			case "Seleccionar disciplina deportiva y gestionar el club" -> mostrarSubmenuClub();
 			case "Comprar entradas para partidos" -> mostrarSubmenuCompraEntradas();
-			case "Administrar Reservas" -> mostrarSubmenuReservarInstalacion(SistemaRegistro.clubesRegistrados);
+			case "Administrar Reservas" -> mostrarSubmenuReservarInstalacion(SistemaRegistro_old.clubesRegistrados);
 			default -> JOptionPane.showMessageDialog(null, "Opción no válida.");
 		}
 	}
@@ -171,7 +171,7 @@ public abstract class Usuario extends Persona {
 	}
 
 	public List<Disciplina> buscarDisciplinasPorNombreClub(String nombreClub) {
-		for (Club club : SistemaRegistro.clubesRegistrados) {
+		for (Club club : SistemaRegistro_old.clubesRegistrados) {
 			if (club.getNombre().equalsIgnoreCase(nombreClub)) {
 				return club.getDisciplinas();
 			}
@@ -181,7 +181,7 @@ public abstract class Usuario extends Persona {
 
 	public List<Club> buscarClubesPorNombreDisciplina(String nombreDisciplina) {
 		List<Club> clubesConDisciplina = new ArrayList<>();
-		for (Club club : SistemaRegistro.clubesRegistrados) {
+		for (Club club : SistemaRegistro_old.clubesRegistrados) {
 			for (Disciplina disciplina : club.getDisciplinas()) {
 				if (disciplina.getNombreDisciplina().equalsIgnoreCase(nombreDisciplina)) {
 					clubesConDisciplina.add(club);
@@ -298,14 +298,14 @@ public abstract class Usuario extends Persona {
 
 	private void realizarNuevaReserva() {
 		// verificar si hay clubes
-		if (SistemaRegistro.clubesRegistrados.isEmpty()) {
+		if (SistemaRegistro_old.clubesRegistrados.isEmpty()) {
 			JOptionPane.showMessageDialog(null, "No hay clubes registrados.");
 			return;
 		}
 		// Seleccionar por club
-		String[] nombres = new String[SistemaRegistro.clubesRegistrados.size()];
-		for (int i = 0; i < SistemaRegistro.clubesRegistrados.size(); i++) {
-			nombres[i] = SistemaRegistro.clubesRegistrados.get(i).getNombre();
+		String[] nombres = new String[SistemaRegistro_old.clubesRegistrados.size()];
+		for (int i = 0; i < SistemaRegistro_old.clubesRegistrados.size(); i++) {
+			nombres[i] = SistemaRegistro_old.clubesRegistrados.get(i).getNombre();
 		}
 		String seleccion = (String) JOptionPane.showInputDialog(
 				null,
@@ -321,7 +321,7 @@ public abstract class Usuario extends Persona {
 		}
 		// buscar club seleccionado
 		Club clubSeleccionado = null;
-		for (Club club : SistemaRegistro.clubesRegistrados) {
+		for (Club club : SistemaRegistro_old.clubesRegistrados) {
 			if (club.getNombre().equals(seleccion)) {
 				clubSeleccionado = club;
 				break;

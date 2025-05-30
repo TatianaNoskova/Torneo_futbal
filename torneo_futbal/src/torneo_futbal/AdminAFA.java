@@ -249,7 +249,7 @@ public class AdminAFA extends Administrador {
 
 	        // Reunir todas las categorías disponibles de todos los equipos
 	        Set<String> categoriasDisponibles = new HashSet<>();
-	        for (Club club : SistemaRegistro.clubesRegistrados) {
+	        for (Club club : SistemaRegistro_old.clubesRegistrados) {
 	            for (Equipo equipo : club.getEquipos()) {
 	                categoriasDisponibles.add(equipo.getCategoria());
 	            }
@@ -277,7 +277,7 @@ public class AdminAFA extends Administrador {
 
 	        // Mostrar equipos disponibles de esa categoría
 	        List<Equipo> equiposCategoria = new ArrayList<>();
-	        for (Club club : SistemaRegistro.clubesRegistrados) {
+	        for (Club club : SistemaRegistro_old.clubesRegistrados) {
 	            for (Equipo equipo : club.getEquipos()) {
 	                if (equipo.getCategoria().equalsIgnoreCase(categoriaSeleccionada)) {
 	                    equiposCategoria.add(equipo);
@@ -507,7 +507,7 @@ public class AdminAFA extends Administrador {
 
 	        // 4. Получаем все стадионы из зарегистрированных клубов
 	        List<Estadio> estadios = new ArrayList<>();
-	        for (Club club : SistemaRegistro.clubesRegistrados) {
+	        for (Club club : SistemaRegistro_old.clubesRegistrados) {
 	            estadios.addAll(club.getEstadios());
 	        }
 
@@ -816,74 +816,44 @@ public class AdminAFA extends Administrador {
 	    	}
 	    
 	    public void registrarAdminClubPorEmail() {
-	        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del administrador del club:");
-	        if (nombre == null) {
-	            JOptionPane.showMessageDialog(null, "Operación cancelada. Volviendo al menú...");
-	            return;
-	        }
-
-	        String apellido = JOptionPane.showInputDialog("Ingrese el apellido del administrador del club:");
-	        if (apellido == null) {
-	            JOptionPane.showMessageDialog(null, "Operación cancelada. Volviendo al menú...");
-	            return;
-	        }
-
-	        String email = null;
-	        boolean emailValido = false;
-
-	        while (!emailValido) {
-	            email = JOptionPane.showInputDialog("Ingrese el correo electrónico del administrador del club:");
-
+	        String email;
+	        while (true) {
+	            email = JOptionPane.showInputDialog("Ingrese el e-mail del nuevo Admin del club:");
 	            if (email == null) {
-	                JOptionPane.showMessageDialog(null, "Operación cancelada. Volviendo al menú...");
+	                JOptionPane.showMessageDialog(null, "Operación cancelada.");
 	                return;
 	            }
-
-	            if (email.isBlank()) {
-	                JOptionPane.showMessageDialog(null, "El correo electrónico no puede estar vacío.");
-	                continue;
-	            }
-
-	            if (!email.contains("@")) {
-	                JOptionPane.showMessageDialog(null, "El correo electrónico ingresado no es válido. Debe contener '@'.");
+	            if (email.isBlank() || !email.contains("@")) {
+	                JOptionPane.showMessageDialog(null, "Correo inválido.");
 	                continue;
 	            }
 
 	            if (isEmailAlreadyRegistered(email)) {
-	                JOptionPane.showMessageDialog(null, "Este correo ya está registrado como administrador de club.");
-	                return;
+	                JOptionPane.showMessageDialog(null, "Este correo ya está registrado.");
+	                continue;
 	            }
 
-	            emailValido = true;
+	            break;
 	        }
 
-	        String password = JOptionPane.showInputDialog("Ingrese la contraseña para el administrador:");
-	        if (password == null) {
-	            JOptionPane.showMessageDialog(null, "Operación cancelada. Volviendo al menú...");
-	            return;
-	        }
+	        try (Connection conn = Conexion.getInstance().getConnection()) {
+	            String sql = "INSERT INTO persona (email, rol, nombre, apellido, password) VALUES (?, 'Admin Club', '', '', '')";
+	            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	                stmt.setString(1, email.toLowerCase());
 
-	        // Сохраняем администратора клуба в базе данных
-	        try (Connection connection = Conexion.getInstance().getConnection()) {
-	            String query = "INSERT INTO persona (nombre, apellido, email, password, rol) VALUES (?, ?, ?, ?, ?)";
-	            try (PreparedStatement stmt = connection.prepareStatement(query)) {
-	                stmt.setString(1, nombre);
-	                stmt.setString(2, apellido);
-	                stmt.setString(3, email.toLowerCase());
-	                stmt.setString(4, password);
-	                stmt.setString(5, "Admin Club");
-
-	                int rowsAffected = stmt.executeUpdate();
-	                if (rowsAffected > 0) {
-	                    JOptionPane.showMessageDialog(null, "El correo fue registrado exitosamente como administrador de club permitido.");
+	                int rows = stmt.executeUpdate();
+	                if (rows > 0) {
+	                    JOptionPane.showMessageDialog(null, "Correo autorizado exitosamente para rol 'Admin Club'.");
 	                } else {
-	                    JOptionPane.showMessageDialog(null, "Hubo un error al registrar el correo.");
+	                    JOptionPane.showMessageDialog(null, "No se pudo autorizar el correo.");
 	                }
 	            }
 	        } catch (SQLException e) {
-	            JOptionPane.showMessageDialog(null, "Error al conectar con la base de datos: " + e.getMessage());
+	            JOptionPane.showMessageDialog(null, "Error al registrar e-mail en base de datos:\n" + e.getMessage());
+	            e.printStackTrace();
 	        }
 	    }
+
 
 
 	    // Метод для проверки, зарегистрирован ли уже e-mail в базе данных
