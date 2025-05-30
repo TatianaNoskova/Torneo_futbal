@@ -658,6 +658,18 @@ public class AdminClub extends Administrador {
 			JOptionPane.showMessageDialog(null, "Debe ingresar un nombre.");
 			return;
 		}
+		Publico publico1 = new Publico("Juan", "Perez", "juan.perez@gmail.com", "12");
+		ReservaInstalacion reserva1 = new ReservaInstalacion(publico1,disponibilidad[0],disponibilidad[1]);
+
+		instalacionSeleccionada.setReservas(reserva1);	
+		// Mostrar toda la informacion de la reserva
+
+		JOptionPane.showMessageDialog(null, "Reserva exitosa." +
+				"id: " + reserva1.getIdReserva() +
+				"\nInstalacion: " + instalacionSeleccionada.getNombreInstalacion() +
+				"\nFecha Inicio: " + reserva1.getFechaReservaInicio() +
+				"\nFecha Fin: " + reserva1.getFechaReservaFin());		
+				
 
 	}
 
