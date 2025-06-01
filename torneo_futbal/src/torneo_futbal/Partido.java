@@ -1,9 +1,20 @@
 package torneo_futbal;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class Partido {
+	
+	protected int idPartido;
 	
 	private Estadio estadio;
 	
@@ -17,14 +28,29 @@ public class Partido {
     private int golesEquipo1;
     private int golesEquipo2;
     private boolean resultadoCapturado = false;
+    
+    public Partido() {
+        // Нужен для загрузки данных из базы
+    }
 
     
-    public Partido(Equipo equipo1, Equipo equipo2) {
+    public Partido (Equipo equipo1, Equipo equipo2) {
+    	
         this.equipo1 = equipo1;
         this.equipo2 = equipo2;
     }
+    
+    public int getIdPartido() {
+        return idPartido;
+    }
+    
+    
+    public void setIdPartido(int idPartido) {
+		this.idPartido = idPartido;
+	}
 
-    public Estadio getEstadio() {
+
+	public Estadio getEstadio() {
         return estadio;
     }
 
@@ -43,9 +69,21 @@ public class Partido {
     }
     
     
+    
+    
    
     
-    public LocalDate getFecha() {
+    public void setEquipo1(Equipo equipo1) {
+		this.equipo1 = equipo1;
+	}
+
+
+	public void setEquipo2(Equipo equipo2) {
+		this.equipo2 = equipo2;
+	}
+
+
+	public LocalDate getFecha() {
 		return fecha;
 	}
 
@@ -64,6 +102,14 @@ public class Partido {
     public void setArbitro(Arbitro arbitro) {
     	this.arbitro = arbitro;
     	}
+    
+    public LocalDateTime getFechaHora() {
+        if (fecha != null && hora != null) {
+            return LocalDateTime.of(fecha, hora);
+        }
+        return null;
+    }
+
 
     public Arbitro getArbitro() {
     	return this.arbitro;
@@ -77,10 +123,45 @@ public class Partido {
     public boolean resultadoCapturado() { return resultadoCapturado; }
     public void setResultadoCapturado(boolean capturado) { this.resultadoCapturado = capturado; }
     
+ // Пример: registrar(Connection conn, String categoria, int idTorneo)
+    public void registrar(Connection conn, String categoria, int idTorneo) throws SQLException {
+        String sql = "INSERT INTO partido (id_equipo1, id_equipo2, id_estadio, fecha_hora, id_torneo) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, equipo1.getIdEquipo());
+            ps.setInt(2, equipo2.getIdEquipo());
+            ps.setInt(3, 1); // временный стадион
+            ps.setTimestamp(4, null); // пока без даты
+            ps.setInt(5, idTorneo);
+
+            ps.executeUpdate();
+
+            // Получаем ID, который база сгенерировала
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    this.idPartido = rs.getInt(1); // сохраняем в объект Partido
+                }
+            }
+        }
+    }
+    
+    
+
+
+    
     @Override
     public String toString() {
-        return equipo1.getNombre() + " vs " + equipo2.getNombre();
+        String nombre1 = equipo1 != null ? equipo1.getNombre() : "???";
+        String nombre2 = equipo2 != null ? equipo2.getNombre() : "???";
+
+        LocalDateTime fechaHora = getFechaHora();
+        String fechaHoraStr = (fechaHora != null)
+                ? fechaHora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                : "Fecha/hora no asignada";
+
+        return nombre1 + " vs " + nombre2 + " (" + fechaHoraStr + ")";
     }
+
+
 
 
     

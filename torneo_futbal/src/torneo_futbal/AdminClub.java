@@ -322,7 +322,31 @@ public class AdminClub extends Administrador {
             stmt.setInt(5, idClub);  
 
             stmt.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Equipo registrado exitosamente.");
+
+         // Показать данные с эмблемой
+         ImageIcon escudoIcon = null;
+         try {
+             escudoIcon = new ImageIcon(escudoBytes);
+             Image imagenOriginal = escudoIcon.getImage();
+             Image imagenEscalada = imagenOriginal.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+             ImageIcon escudoEscalado = new ImageIcon(imagenEscalada);
+
+             JOptionPane.showMessageDialog(
+                 null,
+                 "Equipo registrado extitosamente:\n" +
+                 "Nombre: " + nombreEquipo + "\n" +
+                 "Categoría: " + categoria + "\n" +
+                 "Colores: " + colores + "\n" +
+                 "Estadio Local: " + estadioSeleccionado.getNombre(),
+                 "Escudo del equipo",
+                 JOptionPane.INFORMATION_MESSAGE,
+                 escudoEscalado
+             );
+         } catch (Exception ex) {
+             ex.printStackTrace();
+             JOptionPane.showMessageDialog(null, "Equipo registrado, pero no se pudo cargar el escudo.");
+         }
+
         }
     } catch (SQLException e) {
         e.printStackTrace();
@@ -409,7 +433,7 @@ public class AdminClub extends Administrador {
 	            stmtDisciplina.executeUpdate();
 	            try (ResultSet rs = stmtDisciplina.getGeneratedKeys()) {
 	                if (rs.next()) {
-	                    idDisciplina = rs.getInt(1);  // Получаем ID дисциплины
+	                    idDisciplina = rs.getInt(1); 
 	                }
 	            }
 	        }
@@ -420,21 +444,32 @@ public class AdminClub extends Administrador {
 	            stmtInstalacion.setString(2, direccionInstalacion);
 	            stmtInstalacion.setString(3, descripcion);
 	            stmtInstalacion.setInt(4, idDisciplina);  
-	            stmtInstalacion.setInt(5, idClub);  
+	            stmtInstalacion.setInt(5, idClub);
+	            stmtInstalacion.executeUpdate();
 	            try (ResultSet rs = stmtInstalacion.getGeneratedKeys()) {
 	                if (rs.next()) {
 	                    idInstalacion = rs.getInt(1);  
 	                }
 	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            JOptionPane.showMessageDialog(null, "Error al registrar la instalación.");
+	            return;  
+	        }
+
+	        
+	        if (idInstalacion == -1) {
+	            JOptionPane.showMessageDialog(null, "Error al registrar la instalación. El id_instalacion no fue generado.");
+	            return; 
 	        }
 
 	        String sqlHorarioSemana = "INSERT INTO horario_instalacion (horario_semana_apertura, horario_semana_cierre, horario_fin_semana_apertura, horario_fin_semana_cierre, id_instalacion) VALUES (?, ?, ?, ?, ?)";
 	        try (PreparedStatement stmtHorarioSemana = conn.prepareStatement(sqlHorarioSemana)) {
-	            stmtHorarioSemana.setTime(1, Time.valueOf(horaApertura));  // Время открытия для буднего дня
-	            stmtHorarioSemana.setTime(2, Time.valueOf(horaCierre));    // Время закрытия для буднего дня
-	            stmtHorarioSemana.setTime(3, Time.valueOf(horaAperturaFin));  // Время открытия для выходных
-	            stmtHorarioSemana.setTime(4, Time.valueOf(horaCierreFin));    // Время закрытия для выходных
-	            stmtHorarioSemana.setInt(5, idInstalacion);  // Связываем часы с установкой
+	            stmtHorarioSemana.setTime(1, Time.valueOf(horaApertura));  
+	            stmtHorarioSemana.setTime(2, Time.valueOf(horaCierre));    
+	            stmtHorarioSemana.setTime(3, Time.valueOf(horaAperturaFin));  
+	            stmtHorarioSemana.setTime(4, Time.valueOf(horaCierreFin));   
+	            stmtHorarioSemana.setInt(5, idInstalacion);  
 	            stmtHorarioSemana.executeUpdate();
 	        }
 
@@ -452,48 +487,47 @@ public class AdminClub extends Administrador {
 
   private void registrarDirectorTecnico() {
 	  
-	  int idClub = obtenerIdClubPorAdmin(email);
-	  if (idClub == -1) {
-		   JOptionPane.showMessageDialog(null, "Primero debe registrar un club.");
+	    int idClub = obtenerIdClubPorAdmin(email);
+	    if (idClub == -1) {
+	        JOptionPane.showMessageDialog(null, "Primero debe registrar un club.");
 	        return;
-	   }
-	   
-	  List<Equipo> equipos = obtenerEquiposDelClub(idClub);
-	  if (equipos.isEmpty()) {
-	       JOptionPane.showMessageDialog(null, "Primero debe registrar al menos un equipo.");
-	       return;
-	  }
-
-	  String nombre = JOptionPane.showInputDialog("Ingrese el nombre del Director Técnico:");
-	  String apellido = JOptionPane.showInputDialog("Ingrese el apellido del Director Técnico:");
+	    }
 	    
-	  String emailDT = null;
-	  boolean emailValido = false;
-
-	    
-	  	while (!emailValido) {
-		  emailDT = JOptionPane.showInputDialog("Ingrese el email del Director Técnico:");
-		  if (emailDT == null || emailDT.isBlank()) {
-			  JOptionPane.showMessageDialog(null, "El email no puede estar vacío.");
-			  continue;
-		  }
-		  if (!emailDT.contains("@")) {
-			  JOptionPane.showMessageDialog(null, "El email ingresado no es válido. Debe contener '@'.");
-			  continue;
-		  }
-		  emailValido = true;
-	  	}
-
-	  	String password = JOptionPane.showInputDialog("Ingrese la contraseña del Director Técnico:");
-	  	if (password == null || password.isBlank()) {
-		  JOptionPane.showMessageDialog(null, "La contraseña no puede estar vacía.");
+	    List<Equipo> equipos = obtenerEquiposDelClub(idClub);
+	    if (equipos.isEmpty()) {
+	        JOptionPane.showMessageDialog(null, "Primero debe registrar al menos un equipo.");
 	        return;
-	  	}
+	    }
 
-	  	if (nombre == null || apellido == null || nombre.isBlank() || apellido.isBlank()) {
-		  JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
-		  return;
-	  	}
+	    String nombre = JOptionPane.showInputDialog("Ingrese el nombre del Director Técnico:");
+	    String apellido = JOptionPane.showInputDialog("Ingrese el apellido del Director Técnico:");
+	    
+	    String emailDT = null;
+	    boolean emailValido = false;
+
+	    while (!emailValido) {
+	        emailDT = JOptionPane.showInputDialog("Ingrese el email del Director Técnico:");
+	        if (emailDT == null || emailDT.isBlank()) {
+	            JOptionPane.showMessageDialog(null, "El email no puede estar vacío.");
+	            continue;
+	        }
+	        if (!emailDT.contains("@")) {
+	            JOptionPane.showMessageDialog(null, "El email ingresado no es válido. Debe contener '@'.");
+	            continue;
+	        }
+	        emailValido = true;
+	    }
+
+	    String password = JOptionPane.showInputDialog("Ingrese la contraseña del Director Técnico:");
+	    if (password == null || password.isBlank()) {
+	        JOptionPane.showMessageDialog(null, "La contraseña no puede estar vacía.");
+	        return;
+	    }
+
+	    if (nombre == null || apellido == null || nombre.isBlank() || apellido.isBlank()) {
+	        JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
+	        return;
+	    }
 
 	    String[] nombresEquipos = new String[equipos.size()];
 	    for (int i = 0; i < equipos.size(); i++) {
@@ -524,24 +558,35 @@ public class AdminClub extends Administrador {
 	    }
 
 	    try (Connection conn = Conexion.getInstance().getConnection()) {
+	        String sqlCheckDT = "SELECT COUNT(*) FROM persona WHERE id_equipo = ? AND rol = 'DT'";
+	        try (PreparedStatement stmtCheckDT = conn.prepareStatement(sqlCheckDT)) {
+	            stmtCheckDT.setInt(1, equipoSeleccionado.getIdEquipo());
+	            try (ResultSet rs = stmtCheckDT.executeQuery()) {
+	                if (rs.next() && rs.getInt(1) > 0) {
+	                    JOptionPane.showMessageDialog(null, "El equipo ya tiene un Director Técnico asignado.");
+	                    return; 
+	                }
+	            }
+	        }
+
 	        String sql = "INSERT INTO persona (nombre, apellido, email, password, rol, id_equipo) VALUES (?, ?, ?, ?, ?, ?)";
 	        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 	            stmt.setString(1, nombre);
 	            stmt.setString(2, apellido);
-	            stmt.setString(3, email);
+	            stmt.setString(3, emailDT); 
 	            stmt.setString(4, password);
-	            stmt.setString(5, "DT");  
-	            stmt.setInt(6, equipoSeleccionado.getIdEquipo());  
+	            stmt.setString(5, "DT"); 
+	            stmt.setInt(6, equipoSeleccionado.getIdEquipo()); 
 
 	            int rowsAffected = stmt.executeUpdate();
 	            if (rowsAffected > 0) {
 	                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
 	                    if (generatedKeys.next()) {
-	                        int directorId = generatedKeys.getInt(1);  
+	                        int directorId = generatedKeys.getInt(1); 
 
 	                        JOptionPane.showMessageDialog(null,
 	                            "Director Técnico asignado al equipo " + equipoSeleccionado.getNombre() + ":\n" +
-	                            nombre + " " + apellido + "\nEmail: " + email);
+	                            nombre + " " + apellido + "\nEmail: " + emailDT);
 	                    }
 	                }
 	            } else {
@@ -554,6 +599,7 @@ public class AdminClub extends Administrador {
 	    }
 	}
 
+
   public List<Equipo> obtenerEquiposDelClub(int idClub) {
 	    List<Equipo> equipos = new ArrayList<>();
 	    
@@ -561,7 +607,7 @@ public class AdminClub extends Administrador {
 	        
 	        String sql = "SELECT id_equipo, nombre FROM equipo WHERE id_club = ?";
 	        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-	            stmt.setInt(1, idClub);  // Устанавливаем id клуба, для которого ищем команды
+	            stmt.setInt(1, idClub); 
 	            
 	            try (ResultSet rs = stmt.executeQuery()) {
 	                while (rs.next()) {

@@ -18,8 +18,8 @@ public class SistemaTorneos {
 
     // Метод для получения всех турниров
     public List<Torneo> obtenerTorneos() {
-    	//!!!!!!!return torneos; //!!!!!!! вернуть после подключение к БАЗЕ ДАННЫХ
-    	return SistemaRegistro_old.torneosRegistrados; // это хак, убрать после подключения в БД
+    	return torneos; 
+    	
     }
 
     // Метод для отображения информации о турнире

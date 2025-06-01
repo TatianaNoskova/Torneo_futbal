@@ -7,21 +7,30 @@ import java.util.Set;
 
 public class Torneo {
 	
-	String nombreTorneo;
-	String anoTorneo;
+	protected int idTorneo;
+	private String nombreTorneo;
+	private String anoTorneo;
 	private List<Equipo> equiposParticipantes = new ArrayList<>();
 	private List<String> partidosSorteados; // Хранение матчей
 	private List<Partido> partidos;  
 	
-	public Torneo(String nombreTorneo, String anoTorneo) {
-		
+	public Torneo(int idTorneo, String nombreTorneo, String anoTorneo) {
+		this.idTorneo = idTorneo;
 		this.nombreTorneo = nombreTorneo;
 		this.anoTorneo = anoTorneo;
 		this.partidos = new ArrayList<>();
 	}
 	
+	public int getIdTorneo() {
+		return idTorneo;
+	}
 	
 	
+	
+	public void setIdTorneo(int idTorneo) {
+		this.idTorneo = idTorneo;
+	}
+
 	public String getNombreTorneo() {
 		return nombreTorneo;
 	}

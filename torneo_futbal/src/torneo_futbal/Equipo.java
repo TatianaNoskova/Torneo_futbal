@@ -1,6 +1,10 @@
 package torneo_futbal;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 
@@ -63,6 +67,25 @@ public class Equipo {
 	    public void setDirectorTecnico(DirectorTecnico directorTecnico) {
 	        this.directorTecnico = directorTecnico;
 	    }
+	    
+	    
+
+	    public static Equipo obtenerEquipoPorId(Connection conn, int idEquipo) throws SQLException {
+	        String query = "SELECT id_equipo, nombre, categoria FROM equipo WHERE id_equipo = ?";
+	        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+	            stmt.setInt(1, idEquipo);
+	            try (ResultSet rs = stmt.executeQuery()) {
+	                if (rs.next()) {
+	                    return new Equipo(rs.getInt("id_equipo"), rs.getString("nombre"), rs.getString("categoria"), null, null, null);
+	                }
+	            }
+	        }
+	        return null; // <- если не найден
+	    }
+
+	    
+
+
 
 	    @Override
 	    public String toString() {

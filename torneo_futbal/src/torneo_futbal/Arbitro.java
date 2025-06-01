@@ -1,23 +1,48 @@
 package torneo_futbal;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.swing.JOptionPane;
 
 public class Arbitro extends Usuario {
 	
+	protected int idArbitro;
 	protected String email;
     protected String rol;
 
     public Arbitro (String nombre, String apellido, String email, String password) {
         super(nombre, apellido, email, password, "Árbitro" );
+        
         this.email = email;
        
     }
+    
+    public Arbitro(int idArbitro, String nombre, String apellido) {
+        super(nombre, apellido, null, null, "Árbitro");
+        this.idArbitro = idArbitro;  // добавь поле id в класс Arbitro, если его нет
+    }
+    
+    public int getidArbitro() {
+    	return idArbitro;
+    }
+
 
 	public String getEmail() {
 		return email;
 	}
-
+	
+	
+	public int getIdArbitro() {
+		return idArbitro;
+	}
 		
+	public void setIdArbitro(int idArbitro) {
+		this.idArbitro = idArbitro;
+	}
+
 	@Override
     public void mostrarMenu() {
 		boolean salir = false;
@@ -74,6 +99,26 @@ public class Arbitro extends Usuario {
 		        "Has seleccionado: " + seleccion + "\n(Función aún no implementada)"
 		    );
 		}
+	 
+	 
+	 public static Arbitro obtenerArbitroPorId(Connection conn, int idArbitro) throws SQLException {
+		    String query = "SELECT id_persona, nombre, apellido FROM persona WHERE id_persona = ? AND rol = 'Arbitro'";
+		    try (PreparedStatement stmt = conn.prepareStatement(query)) {
+		        stmt.setInt(1, idArbitro);
+		        try (ResultSet rs = stmt.executeQuery()) {
+		            if (rs.next()) {
+		                return new Arbitro(
+		                    rs.getInt("id_persona"),
+		                    rs.getString("nombre"),
+		                    rs.getString("apellido")
+		                );
+		            } else {
+		                throw new SQLException("No se encontró árbitro con ID: " + idArbitro);
+		            }
+		        }
+		    }
+		}
+
 
 	        
 	 @Override

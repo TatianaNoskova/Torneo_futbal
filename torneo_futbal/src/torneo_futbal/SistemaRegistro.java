@@ -12,6 +12,8 @@ import java.sql.SQLException;
 public class SistemaRegistro {
 
 	public void iniciarRegistro() {
+		
+		try {
 		String[] opciones = {"Registrarse", "Iniciar sesión"};
 		String seleccion = (String) JOptionPane.showInputDialog(null,
 				"¿Qué deseas hacer?",
@@ -31,7 +33,12 @@ public class SistemaRegistro {
 					registrarNuevoUsuario();
 					} else {
 						iniciarSesion();
+					
 					}
+	} catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error inesperado: " + e.getMessage());
+    }
 	}
 
 	private void registrarNuevoUsuario() {
