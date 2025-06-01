@@ -58,8 +58,7 @@ public class AdminAFA extends Administrador {
 	            String[] opciones = {
 	                    "Organizar torneo",
 	                    "Registrar correos de administradores de los Clubes",
-	                    "Registrar árbitro",
-	                    "Asignar sedes y horarios",
+	                    "Asignar sedes, horarios y árbitros",
 	                    "Capturar estadísticas y resultados",
 	                    "Salir"
 	            };
@@ -86,8 +85,7 @@ public class AdminAFA extends Administrador {
 	        switch (seleccion) {
 	            case "Organizar torneo" -> mostrarSubmenuOrganizarTorneo();
 	            case "Registrar correos de administradores de los Clubes" -> registrarAdminClubPorEmail();
-	            case "Registrar árbitro" -> registrarArbitro();
-	            case "Asignar sedes y horarios" -> mostrarSubmenuAsignarFechas();
+	            case "Asignar sedes, horarios y árbitros" -> mostrarSubmenuAsignarFechas();
 	            case "Capturar estadísticas y resultados" -> mostrarSubmenuCapturarResultados();
 	            default -> JOptionPane.showMessageDialog(null, "Opción no valida.");
 	        }
@@ -984,99 +982,168 @@ public class AdminAFA extends Administrador {
 
 	    
 	    private void ingresarResultados() {
-	    	List<Torneo> torneos = sistemaTorneos.obtenerTorneos();
-	    	if (torneos.isEmpty()) {
-	    	JOptionPane.showMessageDialog(null, "No hay torneos disponibles.");
-	    	return;
-	    	}
+	        try (Connection conn = Conexion.getInstance().getConnection()) {
 
-	    	// Paso 1: Seleccionar torneo
-	    	String[] nombresTorneos = torneos.stream()
-	    	.map(Torneo::getNombreTorneo)
-	    	.toArray(String[]::new);
+	            // Paso 1: Obtener torneos
+	            List<Torneo> torneos = new ArrayList<>();
+	            try (PreparedStatement stmt = conn.prepareStatement("SELECT id_torneo, nombre, ano FROM torneo")) {
+	                ResultSet rs = stmt.executeQuery();
+	                while (rs.next()) {
+	                    torneos.add(new Torneo(rs.getInt("id_torneo"), rs.getString("nombre"), rs.getString("ano")));
+	                }
+	            }
 
-	    	String seleccionTorneo = (String) JOptionPane.showInputDialog(
-	    	null, "Seleccione un torneo:", "Torneos",
-	    	JOptionPane.QUESTION_MESSAGE, null,
-	    	nombresTorneos, nombresTorneos[0]
-	    	);
-	    	if (seleccionTorneo == null) return;
+	            if (torneos.isEmpty()) {
+	                JOptionPane.showMessageDialog(null, "No hay torneos disponibles.");
+	                return;
+	            }
 
-	    	Torneo torneo = torneos.stream()
-	    	.filter(t -> t.getNombreTorneo().equals(seleccionTorneo))
-	    	.findFirst().orElse(null);
-	    	if (torneo == null) return;
+	            String[] nombresTorneos = torneos.stream().map(Torneo::getNombreTorneo).toArray(String[]::new);
+	            String seleccionTorneo = (String) JOptionPane.showInputDialog(null, "Seleccione un torneo:", "Torneos",
+	                    JOptionPane.QUESTION_MESSAGE, null, nombresTorneos, nombresTorneos[0]);
+	            if (seleccionTorneo == null) return;
 
-	    	// Paso 2: Seleccionar categoría
-	    	Set<String> categorias = torneo.getCategoriasDePartidos();
-	    	if (categorias.isEmpty()) {
-	    	JOptionPane.showMessageDialog(null, "No hay partidos registrados para este torneo.");
-	    	return;
-	    	}
+	            Torneo torneo = torneos.stream()
+	                    .filter(t -> t.getNombreTorneo().equals(seleccionTorneo))
+	                    .findFirst().orElse(null);
+	            if (torneo == null) return;
 
-	    	String[] categoriasArray = categorias.toArray(new String[0]);
-	    	String categoriaSeleccionada = (String) JOptionPane.showInputDialog(
-	    	null, "Seleccione una categoría:", "Categorías",
-	    	JOptionPane.QUESTION_MESSAGE, null,
-	    	categoriasArray, categoriasArray[0]
-	    	);
-	    	if (categoriaSeleccionada == null) return;
+	            // Paso 2: Obtener categorías
+	            Set<String> categorias = new HashSet<>();
+	            String catQuery = """
+	                    SELECT DISTINCT e.categoria
+	                    FROM partido p
+	                    JOIN equipo e ON p.id_equipo1 = e.id_equipo OR p.id_equipo2 = e.id_equipo
+	                    WHERE p.id_torneo = ?
+	                    """;
+	            try (PreparedStatement stmt = conn.prepareStatement(catQuery)) {
+	                stmt.setInt(1, torneo.getIdTorneo());
+	                ResultSet rs = stmt.executeQuery();
+	                while (rs.next()) {
+	                    categorias.add(rs.getString("categoria"));
+	                }
+	            }
 
-	    	// Paso 3: Filtrar partidos jugados (fecha y hora ya pasaron)
-	    	List<Partido> partidosJugados = torneo.getPartidosPorCategoria(categoriaSeleccionada).stream()
-	    	.filter(p -> p.getFecha() != null && p.getHora() != null &&
-	    	p.getEstadio() != null && p.getArbitro() != null &&
-	    	LocalDateTime.of(p.getFecha(), p.getHora()).isBefore(LocalDateTime.now()) &&
-	    	!p.resultadoCapturado()) // el resultado ya no había ingresado
-	    	.toList();
+	            if (categorias.isEmpty()) {
+	                JOptionPane.showMessageDialog(null, "No hay categorías disponibles.");
+	                return;
+	            }
 
-	    	if (partidosJugados.isEmpty()) {
-	    	JOptionPane.showMessageDialog(null, "No hay partidos finalizados sin resultados.");
-	    	return;
-	    	}
+	            String[] categoriasArray = categorias.toArray(new String[0]);
+	            String categoriaSeleccionada = (String) JOptionPane.showInputDialog(null, "Seleccione categoría:", "Categorías",
+	                    JOptionPane.QUESTION_MESSAGE, null, categoriasArray, categoriasArray[0]);
+	            if (categoriaSeleccionada == null) return;
 
-	    	// Paso 4: Seleccionar partido
-	    	Partido partido = (Partido) JOptionPane.showInputDialog(
-	    	null,
-	    	"Seleccione un partido para ingresar el resultado:",
-	    	"Partidos finalizados",
-	    	JOptionPane.QUESTION_MESSAGE,
-	    	null,
-	    	partidosJugados.toArray(),
-	    	partidosJugados.get(0)
-	    	);
-	    	if (partido == null) return;
+	            // Paso 3: Obtener partidos jugados sin resultado
+	            List<Partido> partidosJugados = new ArrayList<>();
+	            String partidosQuery = """
+	                SELECT p.*
+	                FROM partido p
+	                JOIN equipo e1 ON p.id_equipo1 = e1.id_equipo
+	                JOIN equipo e2 ON p.id_equipo2 = e2.id_equipo
+	                WHERE p.id_torneo = ? AND (e1.categoria = ? OR e2.categoria = ?)
+	                  AND p.fecha_hora IS NOT NULL
+	                  AND p.id_estadio IS NOT NULL
+	                  AND p.id_arbitro IS NOT NULL
+	                  AND p.fecha_hora < NOW()
+	                  AND NOT EXISTS (
+	                      SELECT 1 FROM evento_partido ep
+	                      WHERE ep.id_partido = p.id_partido AND ep.tipo = 'GOL'
+	                  )
+	            """;
+	            try (PreparedStatement stmt = conn.prepareStatement(partidosQuery)) {
+	                stmt.setInt(1, torneo.getIdTorneo());
+	                stmt.setString(2, categoriaSeleccionada);
+	                stmt.setString(3, categoriaSeleccionada);
+	                ResultSet rs = stmt.executeQuery();
+	                while (rs.next()) {
+	                    Partido partido = new Partido();
+	                    partido.setIdPartido(rs.getInt("id_partido"));
 
-	    	// Paso 5: Ingresar goles
-	    	int golesEquipo1, golesEquipo2;
+	                    Timestamp ts = rs.getTimestamp("fecha_hora");
+	                    if (ts != null) {
+	                        partido.setFecha(ts.toLocalDateTime().toLocalDate());
+	                        partido.setHora(ts.toLocalDateTime().toLocalTime());
+	                    }
 
-	    	try {
-	    	String input1 = JOptionPane.showInputDialog("Ingrese los goles para " + partido.getEquipo1().getNombre() + ":");
-	    	if (input1 == null) return;
-	    	golesEquipo1 = Integer.parseInt(input1);
+	                    int idEquipo1 = rs.getInt("id_equipo1");
+	                    int idEquipo2 = rs.getInt("id_equipo2");
 
-	    	String input2 = JOptionPane.showInputDialog("Ingrese los goles para " + partido.getEquipo2().getNombre() + ":");
-	    	if (input2 == null) return;
-	    	golesEquipo2 = Integer.parseInt(input2);
-	    	} catch (NumberFormatException e) {
-	    	JOptionPane.showMessageDialog(null, "Formato de número inválido.");
-	    	return;
-	    	}
+	                    partido.setEquipo1(Equipo.obtenerEquipoPorId(conn, idEquipo1));
+	                    partido.setEquipo2(Equipo.obtenerEquipoPorId(conn, idEquipo2));
 
-	    	// Paso 6: Registrar resultado
-	    	partido.setGolesEquipo1(golesEquipo1);
-	    	partido.setGolesEquipo2(golesEquipo2);
-	    	partido.setResultadoCapturado(true); // control para no ingresar el resultado dos veces
+	                    partidosJugados.add(partido);
+	                }
+	            }
 
-	    	String mensajeResultado = "¡Resultado registrado correctamente!\n" +
-	    	partido.getEquipo1().getNombre() + " " + partido.getGolesEquipo1() +
-	    	" - " + partido.getGolesEquipo2() + " " + partido.getEquipo2().getNombre();
+	            if (partidosJugados.isEmpty()) {
+	                JOptionPane.showMessageDialog(null, "No hay partidos finalizados sin resultados.");
+	                return;
+	            }
 
-	    	JOptionPane.showMessageDialog(null, mensajeResultado);
+	            Partido partido = (Partido) JOptionPane.showInputDialog(
+	                    null, "Seleccione un partido para ingresar resultado:", "Partidos finalizados",
+	                    JOptionPane.QUESTION_MESSAGE, null, partidosJugados.toArray(), partidosJugados.get(0));
+	            if (partido == null) return;
 
+	            // Paso 4: Ingresar goles y registrar eventos
+	            int golesEquipo1, golesEquipo2;
+	            String sqlInsertEvento = "INSERT INTO evento_partido (tipo, minuto, descripcion, id_equipo, id_partido) VALUES (?, ?, ?, ?, ?)";
 
-	    	mostrarSubmenuCapturarResultados();
-	    	}
+	            try (PreparedStatement insertStmt = conn.prepareStatement(sqlInsertEvento)) {
+	                // Equipo 1
+	                String input1 = JOptionPane.showInputDialog("¿Cuántos goles anotó " + partido.getEquipo1().getNombre() + "?");
+	                if (input1 == null) return;
+	                golesEquipo1 = Integer.parseInt(input1);
+
+	                for (int i = 1; i <= golesEquipo1; i++) {
+	                    String minutoStr = JOptionPane.showInputDialog("¿En qué minuto fue el gol #" + i + " de " + partido.getEquipo1().getNombre() + "?");
+	                    if (minutoStr == null) return;
+	                    int minuto = Integer.parseInt(minutoStr);
+
+	                    insertStmt.setString(1, "GOL");
+	                    insertStmt.setInt(2, minuto);
+	                    insertStmt.setString(3, "Gol del equipo " + partido.getEquipo1().getNombre());
+	                    insertStmt.setInt(4, partido.getEquipo1().getIdEquipo());
+	                    insertStmt.setInt(5, partido.getIdPartido());
+	                    insertStmt.executeUpdate();
+	                }
+
+	                // Equipo 2
+	                String input2 = JOptionPane.showInputDialog("¿Cuántos goles anotó " + partido.getEquipo2().getNombre() + "?");
+	                if (input2 == null) return;
+	                golesEquipo2 = Integer.parseInt(input2);
+
+	                for (int i = 1; i <= golesEquipo2; i++) {
+	                    String minutoStr = JOptionPane.showInputDialog("¿En qué minuto fue el gol #" + i + " de " + partido.getEquipo2().getNombre() + "?");
+	                    if (minutoStr == null) return;
+	                    int minuto = Integer.parseInt(minutoStr);
+
+	                    insertStmt.setString(1, "GOL");
+	                    insertStmt.setInt(2, minuto);
+	                    insertStmt.setString(3, "Gol del equipo " + partido.getEquipo2().getNombre());
+	                    insertStmt.setInt(4, partido.getEquipo2().getIdEquipo());
+	                    insertStmt.setInt(5, partido.getIdPartido());
+	                    insertStmt.executeUpdate();
+	                }
+
+	                JOptionPane.showMessageDialog(null,
+	                        "Resultado guardado correctamente:\n" +
+	                                partido.getEquipo1().getNombre() + " " + golesEquipo1 +
+	                                " - " + golesEquipo2 + " " + partido.getEquipo2().getNombre());
+
+	            } catch (NumberFormatException e) {
+	                JOptionPane.showMessageDialog(null, "Número inválido. Intente de nuevo.");
+	            }
+
+	            mostrarSubmenuCapturarResultados();
+
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            JOptionPane.showMessageDialog(null, "Error al conectar con la base de datos: " + e.getMessage());
+	        }
+	    }
+
 	    
 	    public void registrarAdminClubPorEmail() {
 	        String email;
